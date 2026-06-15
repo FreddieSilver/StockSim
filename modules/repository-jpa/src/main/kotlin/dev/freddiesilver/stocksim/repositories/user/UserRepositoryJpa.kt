@@ -3,9 +3,7 @@ package dev.freddiesilver.stocksim.repositories.user
 import dev.freddiesilver.stocksim.UserRepository
 import dev.freddiesilver.stocksim.entities.UserEntity
 import dev.freddiesilver.stocksim.mappers.UserMapper
-import dev.freddiesilver.stocksim.user.Balance
 import dev.freddiesilver.stocksim.user.User
-import dev.freddiesilver.stocksim.user.Username
 import java.math.BigDecimal
 
 class UserRepositoryJpa(
