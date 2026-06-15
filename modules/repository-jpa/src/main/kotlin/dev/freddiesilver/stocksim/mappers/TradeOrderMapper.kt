@@ -1,8 +1,6 @@
 package dev.freddiesilver.stocksim.mappers
 
-import dev.freddiesilver.stocksim.entities.StockEntity
 import dev.freddiesilver.stocksim.entities.TradeOrderEntity
-import dev.freddiesilver.stocksim.entities.UserEntity
 import dev.freddiesilver.stocksim.trading.tradeorder.TradeOrder
 
 object TradeOrderMapper {
@@ -17,13 +15,11 @@ object TradeOrderMapper {
     )
 
     fun toEntity(
-        domain: TradeOrder,
-        userEntity: UserEntity,
-        stockEntity: StockEntity
+        domain: TradeOrder
     ): TradeOrderEntity = TradeOrderEntity(
         id = domain.id,
-        user = userEntity,
-        stock = stockEntity,
+        user = UserMapper.toEntity(domain.user),
+        stock = StockMapper.toEntity(domain.stock),
         type = domain.type,
         quantity = domain.quantity,
         priceAtOrder = domain.priceValueAtOrder,

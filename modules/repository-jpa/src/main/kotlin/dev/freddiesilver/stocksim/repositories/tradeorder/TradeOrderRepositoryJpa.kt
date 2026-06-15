@@ -22,10 +22,10 @@ class TradeOrderRepositoryJpa(
         type: OrderType,
         quantity: Int
     ): TradeOrder {
-        val userEntity = userJpaRepository.findById(user.id).orElseThrow {
+        userJpaRepository.findById(user.id).orElseThrow {
             IllegalArgumentException("User with id ${user.id} not found")
         }
-        val stockEntity = stockJpaRepository.findById(stock.id).orElseThrow {
+        stockJpaRepository.findById(stock.id).orElseThrow {
             IllegalArgumentException("Stock with id ${stock.id} not found")
         }
         val domainOrder = TradeOrder(
@@ -36,7 +36,7 @@ class TradeOrderRepositoryJpa(
             priceValueAtOrder = stock.price.value,
             status = OrderStatus.PENDING
         )
-        val entity = TradeOrderMapper.toEntity(domainOrder, userEntity, stockEntity)
+        val entity = TradeOrderMapper.toEntity(domainOrder)
         return TradeOrderMapper.toDomain(jpa.save(entity))
     }
 

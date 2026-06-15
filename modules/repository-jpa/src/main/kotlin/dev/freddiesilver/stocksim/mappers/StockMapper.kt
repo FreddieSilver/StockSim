@@ -12,4 +12,12 @@ object StockMapper {
             price = Price(stockEntity.price)
         )
     }
+
+    fun toEntity(stock: Stock): StockEntity {
+        return StockEntity(
+            id = stock.id,
+            company = CompanyMapper.toEntity(stock.company),
+            price = stock.price.value
+        )
+    }
 }
