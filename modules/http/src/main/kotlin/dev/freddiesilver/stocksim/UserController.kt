@@ -61,7 +61,7 @@ class UserController(
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build<Unit>()
     }
 
-    @GetMapping("/api/me")
+    @GetMapping("/me")
     fun userHome(user: AuthenticatedUser): ResponseEntity<*> {
         return when (val res = userService.getUserById(user.user.id)) {
             is Success ->

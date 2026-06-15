@@ -18,7 +18,7 @@ import kotlin.random.Random
 @Service
 class MarketSimulator(
     private val trxManager: TransactionManager,
-    private val random: Random = Random.Default
+    private val random: Random
 ) {
 
     /**

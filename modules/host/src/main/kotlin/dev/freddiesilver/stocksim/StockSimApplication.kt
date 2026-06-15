@@ -53,6 +53,9 @@ class StockSimApplication {
     fun clock(): Clock = Clock.systemUTC()
 
     @Bean
+    fun random(): kotlin.random.Random = kotlin.random.Random.Default
+
+    @Bean
     fun usersDomainConfig() =
         UsersDomainConfig(
             tokenSizeInBytes = 256 / 8,
