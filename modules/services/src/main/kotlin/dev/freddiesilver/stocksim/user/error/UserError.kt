@@ -1,4 +1,4 @@
-package dev.freddiesilver.stocksim.user
+package dev.freddiesilver.stocksim.user.error
 
 sealed class UserError(
     override val message: String,
@@ -18,4 +18,5 @@ sealed class UserError(
     class InvalidDepositAmount(
         additionalMessage: String,
     ) : UserError("Invalid deposit amount: $additionalMessage")
+
 }

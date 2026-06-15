@@ -3,6 +3,7 @@ package dev.freddiesilver.stocksim.tradeorder
 import dev.freddiesilver.stocksim.Either
 import dev.freddiesilver.stocksim.failure
 import dev.freddiesilver.stocksim.success
+import dev.freddiesilver.stocksim.tradeorder.error.TradeOrderError
 import dev.freddiesilver.stocksim.trading.holding.Holding
 import dev.freddiesilver.stocksim.trading.stock.Price
 import dev.freddiesilver.stocksim.trading.stock.Stock

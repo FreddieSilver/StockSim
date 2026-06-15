@@ -10,6 +10,8 @@ import dev.freddiesilver.stocksim.trading.tradeorder.OrderStatus
 import dev.freddiesilver.stocksim.trading.tradeorder.OrderType
 import dev.freddiesilver.stocksim.trading.tradeorder.TradeOrder
 import dev.freddiesilver.stocksim.user.Balance
+import dev.freddiesilver.stocksim.user.Email
+import dev.freddiesilver.stocksim.user.PasswordValidationInfo
 import dev.freddiesilver.stocksim.user.User
 import dev.freddiesilver.stocksim.user.Username
 import java.math.BigDecimal
@@ -32,6 +34,8 @@ class TradeOrderRepositoryMemTest {
     private fun createTestUser() = User(
         id = 1L,
         username = Username("testuser"),
+        email = Email("testuser@example.com"),
+        passwordValidationInfo = PasswordValidationInfo("hashed_pw"),
         balance = Balance(BigDecimal("10000.00"))
     )
 
@@ -109,7 +113,7 @@ class TradeOrderRepositoryMemTest {
     @Test
     fun `findByUserId returns only that users orders`() {
         val user1 = createTestUser()
-        val user2 = User(id = 2L, username = Username("other"), balance = Balance(BigDecimal("5000.00")))
+        val user2 = User(id = 2L, username = Username("other"), email = Email("other@example.com"), passwordValidationInfo = PasswordValidationInfo("hashed_pw"), balance = Balance(BigDecimal("5000.00")))
         repo.createOrder(user1, createTestStock(), OrderType.BUY, 10)
         repo.createOrder(user1, createTestStock(), OrderType.SELL, 5)
         repo.createOrder(user2, createTestStock(), OrderType.BUY, 20)

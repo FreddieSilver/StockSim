@@ -1,4 +1,4 @@
-package dev.freddiesilver.stocksim.stock
+package dev.freddiesilver.stocksim.stock.error
 
 sealed class StockError(
     override val message: String?

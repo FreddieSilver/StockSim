@@ -6,6 +6,7 @@ import dev.freddiesilver.stocksim.company.Company
 import dev.freddiesilver.stocksim.company.CompanyName
 import dev.freddiesilver.stocksim.company.Description
 import dev.freddiesilver.stocksim.company.Ticker
+import dev.freddiesilver.stocksim.tradeorder.error.TradeOrderError
 import dev.freddiesilver.stocksim.trading.stock.Price
 import dev.freddiesilver.stocksim.trading.tradeorder.OrderStatus
 import dev.freddiesilver.stocksim.trading.tradeorder.OrderType
@@ -33,7 +34,13 @@ class TradeOrderServiceTest {
 
     private fun createTestUser(): Long =
         trxManager.run {
-            val user = userRepo.createUser("testuser", BigDecimal("10000.00"))
+            val user = userRepo.createUser(
+                dev.freddiesilver.stocksim.user.Username("testuser"),
+                dev.freddiesilver.stocksim.user.Email("testuser@example.com"),
+                dev.freddiesilver.stocksim.user.PasswordValidationInfo("hashed_pw"),
+            )
+            user.deposit(BigDecimal("10000.00"))
+            userRepo.update(user)
             user.id
         }
 

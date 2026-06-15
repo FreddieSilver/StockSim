@@ -6,6 +6,7 @@ import dev.freddiesilver.stocksim.company.CompanyName
 import dev.freddiesilver.stocksim.company.Description
 import dev.freddiesilver.stocksim.company.Ticker
 import dev.freddiesilver.stocksim.failure
+import dev.freddiesilver.stocksim.stock.error.StockError
 import dev.freddiesilver.stocksim.success
 import dev.freddiesilver.stocksim.trading.stock.Stock
 import dev.freddiesilver.stocksim.transaction.TransactionManager

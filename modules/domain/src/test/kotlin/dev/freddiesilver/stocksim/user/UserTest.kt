@@ -8,45 +8,49 @@ import kotlin.test.assertTrue
 
 class UserTest {
 
+    private fun createTestUser(
+        id: Long = 0,
+        username: String = "testuser",
+        email: String = "test@example.com",
+        balance: BigDecimal = BigDecimal("100.00")
+    ) = User(
+        id = id,
+        username = Username(username),
+        email = Email(email),
+        passwordValidationInfo = PasswordValidationInfo("hashed"),
+        balance = Balance(balance),
+    )
+
     @Test
     fun `user is created with correct fields`() {
-        val user = User(
+        val user = createTestUser(
             id = 1L,
-            username = Username("testuser"),
-            balance = Balance(BigDecimal("5000.00"))
+            username = "testuser",
+            email = "test@example.com",
+            balance = BigDecimal("5000.00")
         )
         assertEquals(1L, user.id)
         assertEquals("testuser", user.username.value)
+        assertEquals("test@example.com", user.email.value)
         assertEquals(BigDecimal("5000.00"), user.balance.value)
     }
 
     @Test
     fun `user with default id is created`() {
-        val user = User(
-            username = Username("newuser"),
-            balance = Balance(BigDecimal("100.00"))
-        )
+        val user = createTestUser(username = "newuser", balance = BigDecimal("100.00"))
         assertEquals(0L, user.id)
     }
 
     @Test
     fun `deposit increases balance`() {
-        val user = User(
-            id = 1L,
-            username = Username("testuser"),
-            balance = Balance(BigDecimal("100.00"))
-        )
+        val user = createTestUser()
         user.deposit(BigDecimal("50.00"))
         assertEquals(0, BigDecimal("150.00").compareTo(user.balance.value))
     }
 
     @Test
     fun `deposit with zero amount throws exception`() {
-        val user = User(
-            id = 1L,
-            username = Username("testuser"),
-            balance = Balance(BigDecimal("100.00"))
-        )
+        val user = createTestUser()
         val exception = assertFailsWith<IllegalArgumentException> {
             user.deposit(BigDecimal.ZERO)
         }
@@ -55,11 +59,7 @@ class UserTest {
 
     @Test
     fun `deposit with negative amount throws exception`() {
-        val user = User(
-            id = 1L,
-            username = Username("testuser"),
-            balance = Balance(BigDecimal("100.00"))
-        )
+        val user = createTestUser()
         assertFailsWith<IllegalArgumentException> {
             user.deposit(BigDecimal("-10.00"))
         }
@@ -67,22 +67,14 @@ class UserTest {
 
     @Test
     fun `withdraw decreases balance`() {
-        val user = User(
-            id = 1L,
-            username = Username("testuser"),
-            balance = Balance(BigDecimal("100.00"))
-        )
+        val user = createTestUser()
         user.withdraw(BigDecimal("30.00"))
         assertEquals(0, BigDecimal("70.00").compareTo(user.balance.value))
     }
 
     @Test
     fun `withdraw with insufficient balance throws exception`() {
-        val user = User(
-            id = 1L,
-            username = Username("testuser"),
-            balance = Balance(BigDecimal("100.00"))
-        )
+        val user = createTestUser()
         val exception = assertFailsWith<IllegalArgumentException> {
             user.withdraw(BigDecimal("200.00"))
         }
@@ -91,11 +83,7 @@ class UserTest {
 
     @Test
     fun `withdraw with zero amount throws exception`() {
-        val user = User(
-            id = 1L,
-            username = Username("testuser"),
-            balance = Balance(BigDecimal("100.00"))
-        )
+        val user = createTestUser()
         assertFailsWith<IllegalArgumentException> {
             user.withdraw(BigDecimal.ZERO)
         }
@@ -103,11 +91,7 @@ class UserTest {
 
     @Test
     fun `withdraw with negative amount throws exception`() {
-        val user = User(
-            id = 1L,
-            username = Username("testuser"),
-            balance = Balance(BigDecimal("100.00"))
-        )
+        val user = createTestUser()
         assertFailsWith<IllegalArgumentException> {
             user.withdraw(BigDecimal("-10.00"))
         }
@@ -115,11 +99,7 @@ class UserTest {
 
     @Test
     fun `withdraw exact balance leaves zero`() {
-        val user = User(
-            id = 1L,
-            username = Username("testuser"),
-            balance = Balance(BigDecimal("100.00"))
-        )
+        val user = createTestUser()
         user.withdraw(BigDecimal("100.00"))
         assertEquals(0, BigDecimal.ZERO.compareTo(user.balance.value))
     }

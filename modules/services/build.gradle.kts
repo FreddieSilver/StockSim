@@ -18,6 +18,7 @@ dependencies {
     implementation(project(":modules:repository"))
     implementation(project(":modules:repository-data"))
     implementation("org.springframework.boot:spring-boot-starter")
+    api("org.springframework.security:spring-security-core:6.5.5")
 }
 
 tasks.test {

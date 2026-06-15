@@ -18,6 +18,12 @@ class UserEntity(
     @Column(unique = true, nullable = false, length = 20)
     val username: String,
 
+    @Column(unique = true, nullable = false, length = 255)
+    val email: String,
+
+    @Column(name = "password_validation_info", nullable = false, length = 255)
+    val passwordValidationInfo: String,
+
     @Column(nullable = false, precision = 19, scale = 4)
     var balance: BigDecimal
 )

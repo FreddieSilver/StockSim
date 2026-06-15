@@ -10,6 +10,8 @@ import dev.freddiesilver.stocksim.trading.tradeorder.OrderStatus
 import dev.freddiesilver.stocksim.trading.tradeorder.OrderType
 import dev.freddiesilver.stocksim.trading.tradeorder.TradeOrder
 import dev.freddiesilver.stocksim.user.Balance
+import dev.freddiesilver.stocksim.user.Email
+import dev.freddiesilver.stocksim.user.PasswordValidationInfo
 import dev.freddiesilver.stocksim.user.User
 import dev.freddiesilver.stocksim.user.Username
 import java.math.BigDecimal
@@ -21,6 +23,8 @@ class TradeOrderTest {
     private fun createTestUser() = User(
         id = 1L,
         username = Username("testuser"),
+        email = Email("testuser@example.com"),
+        passwordValidationInfo = PasswordValidationInfo("hashed_pw"),
         balance = Balance(BigDecimal("10000.00"))
     )
 

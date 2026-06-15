@@ -2,6 +2,7 @@ package dev.freddiesilver.stocksim.stock
 
 import dev.freddiesilver.stocksim.Failure
 import dev.freddiesilver.stocksim.Success
+import dev.freddiesilver.stocksim.stock.error.StockError
 import dev.freddiesilver.stocksim.trading.stock.Stock
 import dev.freddiesilver.stocksim.transaction.TransactionManagerMem
 import java.math.BigDecimal

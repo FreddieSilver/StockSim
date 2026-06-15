@@ -2,6 +2,9 @@ package dev.freddiesilver.stocksim
 
 import dev.freddiesilver.stocksim.user.User
 import dev.freddiesilver.stocksim.user.Username
+import dev.freddiesilver.stocksim.user.Email
+import dev.freddiesilver.stocksim.user.PasswordValidationInfo
+import dev.freddiesilver.stocksim.user.Balance
 import java.math.BigDecimal
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -19,18 +22,27 @@ class UserRepositoryMemTest {
         repo = UserRepositoryMem()
     }
 
+    private fun createTestUser(
+        username: String,
+        email: String = "$username@example.com",
+    ): User = repo.createUser(
+        Username(username),
+        Email(email),
+        PasswordValidationInfo("hashed_$username"),
+    )
+
     @Test
     fun `createUser returns user with generated id`() {
-        val user = repo.createUser("testuser", 1000.0.toBigDecimal())
+        val user = createTestUser("testuser")
         assertEquals(1L, user.id)
         assertEquals("testuser", user.username.value)
     }
 
     @Test
     fun `createUser generates sequential ids`() {
-        val user1 = repo.createUser("user1", 100.0.toBigDecimal())
-        val user2 = repo.createUser("user2", 200.0.toBigDecimal())
-        val user3 = repo.createUser("user3", 300.0.toBigDecimal())
+        val user1 = createTestUser("user1")
+        val user2 = createTestUser("user2")
+        val user3 = createTestUser("user3")
         assertEquals(1L, user1.id)
         assertEquals(2L, user2.id)
         assertEquals(3L, user3.id)
@@ -38,7 +50,7 @@ class UserRepositoryMemTest {
 
     @Test
     fun `findById returns existing user`() {
-        val created = repo.createUser("findme", 500.0.toBigDecimal())
+        val created = createTestUser("findme")
         val found = repo.findById(created.id)
         assertNotNull(found)
         assertEquals("findme", found.username.value)
@@ -51,23 +63,23 @@ class UserRepositoryMemTest {
     }
 
     @Test
-    fun `findByUsername returns existing user`() {
-        repo.createUser("findme", 500.0.toBigDecimal())
-        val found = repo.findByUsername("findme")
+    fun `findByEmail returns existing user`() {
+        createTestUser("findme", "findme@test.com")
+        val found = repo.findByEmail("findme@test.com")
         assertNotNull(found)
         assertEquals("findme", found.username.value)
     }
 
     @Test
-    fun `findByUsername returns null for non-existent username`() {
-        val found = repo.findByUsername("nonexistent")
+    fun `findByEmail returns null for non-existent email`() {
+        val found = repo.findByEmail("nonexistent@test.com")
         assertNull(found)
     }
 
     @Test
     fun `findAll returns all users`() {
-        repo.createUser("user1", 100.0.toBigDecimal())
-        repo.createUser("user2", 200.0.toBigDecimal())
+        createTestUser("user1")
+        createTestUser("user2")
         val all = repo.findAll()
         assertEquals(2, all.size)
     }
@@ -80,17 +92,18 @@ class UserRepositoryMemTest {
 
     @Test
     fun `update with modified balance persists deposit`() {
-        val user = repo.createUser("testuser", 100.0.toBigDecimal())
+        val user = createTestUser("testuser")
         user.deposit(BigDecimal("50.00"))
         repo.update(user)
         val updated = repo.findById(user.id)
         assertNotNull(updated)
-        assertEquals(0, updated.balance.value.compareTo(BigDecimal("150.00")))
+        assertEquals(0, updated.balance.value.compareTo(BigDecimal("50.00")))
     }
 
     @Test
     fun `update with modified balance persists withdrawal`() {
-        val user = repo.createUser("testuser", 100.0.toBigDecimal())
+        val user = createTestUser("testuser")
+        user.deposit(BigDecimal("100.00"))
         user.withdraw(BigDecimal("30.00"))
         repo.update(user)
         val updated = repo.findById(user.id)
@@ -100,11 +113,13 @@ class UserRepositoryMemTest {
 
     @Test
     fun `update with existing id replaces user`() {
-        val user = repo.createUser("original", 100.0.toBigDecimal())
+        val user = createTestUser("original")
         val modifiedUser = User(
             id = user.id,
             username = Username("updated"),
-            balance = BigDecimal("999.00").let { dev.freddiesilver.stocksim.user.Balance(it) }
+            email = Email("updated@test.com"),
+            passwordValidationInfo = PasswordValidationInfo("hashed"),
+            balance = Balance(BigDecimal("999.00"))
         )
         repo.update(modifiedUser)
         val found = repo.findById(user.id)!!
@@ -115,7 +130,9 @@ class UserRepositoryMemTest {
     fun `update with id zero creates new user`() {
         val user = User(
             username = Username("new"),
-            balance = dev.freddiesilver.stocksim.user.Balance(BigDecimal("100.00"))
+            email = Email("new@test.com"),
+            passwordValidationInfo = PasswordValidationInfo("hashed"),
+            balance = Balance(BigDecimal("100.00"))
         )
         repo.update(user)
         val all = repo.findAll()
@@ -125,15 +142,15 @@ class UserRepositoryMemTest {
 
     @Test
     fun `deleteById removes user`() {
-        val user = repo.createUser("todelete", 100.0.toBigDecimal())
+        val user = createTestUser("todelete")
         repo.deleteById(user.id)
         assertNull(repo.findById(user.id))
     }
 
     @Test
     fun `deleteById does not affect other users`() {
-        val user1 = repo.createUser("keep", 100.0.toBigDecimal())
-        val user2 = repo.createUser("todelete", 200.0.toBigDecimal())
+        val user1 = createTestUser("keep")
+        val user2 = createTestUser("todelete")
         repo.deleteById(user2.id)
         assertNotNull(repo.findById(user1.id))
         assertNull(repo.findById(user2.id))
@@ -141,8 +158,8 @@ class UserRepositoryMemTest {
 
     @Test
     fun `clear removes all users`() {
-        repo.createUser("user1", 100.0.toBigDecimal())
-        repo.createUser("user2", 200.0.toBigDecimal())
+        createTestUser("user1")
+        createTestUser("user2")
         repo.clear()
         assertTrue(repo.findAll().isEmpty())
     }

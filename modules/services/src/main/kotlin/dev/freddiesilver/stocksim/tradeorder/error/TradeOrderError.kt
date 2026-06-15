@@ -1,4 +1,4 @@
-package dev.freddiesilver.stocksim.tradeorder
+package dev.freddiesilver.stocksim.tradeorder.error
 
 sealed class TradeOrderError(
     override val message: String?

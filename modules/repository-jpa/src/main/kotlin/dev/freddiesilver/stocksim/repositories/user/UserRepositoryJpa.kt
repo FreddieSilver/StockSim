@@ -3,23 +3,34 @@ package dev.freddiesilver.stocksim.repositories.user
 import dev.freddiesilver.stocksim.UserRepository
 import dev.freddiesilver.stocksim.entities.UserEntity
 import dev.freddiesilver.stocksim.mappers.UserMapper
+import dev.freddiesilver.stocksim.user.Email
+import dev.freddiesilver.stocksim.user.PasswordValidationInfo
 import dev.freddiesilver.stocksim.user.User
-import java.math.BigDecimal
+import dev.freddiesilver.stocksim.user.Username
+import dev.freddiesilver.stocksim.user.auth.token.Token
+import dev.freddiesilver.stocksim.user.auth.token.TokenValidationInfo
+import java.time.Instant
 
 class UserRepositoryJpa(
     private val jpa: UserJpaRepository
 ) : UserRepository {
 
-    override fun createUser(username: String, balance: BigDecimal): User {
+    override fun createUser(
+        username: Username,
+        email: Email,
+        password: PasswordValidationInfo
+    ): User {
         val entity = UserEntity(
-            username = username,
-            balance = balance
+            username = username.value,
+            email = email.value,
+            passwordValidationInfo = password.validationInfo,
+            balance = java.math.BigDecimal.ZERO
         )
         return UserMapper.toDomain(jpa.save(entity))
     }
 
-    override fun findByUsername(username: String): User? =
-        jpa.findByUsername(username)?.let { UserMapper.toDomain(it) }
+    override fun findByEmail(email: String): User? =
+        jpa.findByEmail(email)?.let { UserMapper.toDomain(it) }
 
     override fun findById(id: Long): User? =
         jpa.findById(id).orElse(null)?.let { UserMapper.toDomain(it) }
@@ -36,4 +47,20 @@ class UserRepositoryJpa(
 
     override fun clear() =
         jpa.deleteAll()
+
+    override fun getTokenByTokenValidationInfo(tokenValidationInfo: TokenValidationInfo): Pair<User, Token>? {
+        TODO()
+    }
+
+    override fun createToken(token: Token, maxTokens: Int): Token {
+        TODO()
+    }
+
+    override fun updateTokenLastUsed(token: Token, now: Instant) {
+        TODO()
+    }
+
+    override fun removeTokenByValidationInfo(tokenValidationInfo: TokenValidationInfo): Int {
+        TODO()
+    }
 }
