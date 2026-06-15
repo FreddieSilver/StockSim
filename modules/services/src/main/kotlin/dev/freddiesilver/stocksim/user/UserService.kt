@@ -7,17 +7,18 @@ import dev.freddiesilver.stocksim.transaction.TransactionManager
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 
+
 @Service
 class UserService(private val trxManager: TransactionManager) {
 
-    fun createUser(username: String, initialBalance: BigDecimal): Either<UserError, User> =
+    fun createUser(username: String): Either<UserError, User> =
         trxManager.run {
             val existingUser = userRepo.findByUsername(username)
             if (existingUser != null) {
                 return@run failure(UserError.UserAlreadyExists())
             }
             try {
-                val newUser = userRepo.createUser(username, initialBalance)
+                val newUser = userRepo.createUser(username, STARTING_BALANCE)
                 return@run success(newUser)
             } catch (e: Exception) {
                 return@run failure(UserError.InvalidUserData(e.message ?: "Unknown error"))
@@ -69,4 +70,8 @@ class UserService(private val trxManager: TransactionManager) {
                 failure(UserError.InsufficientBalance(e.message ?: "Unknown error"))
             }
         }
+
+    companion object{
+        private val STARTING_BALANCE = BigDecimal(0)
+    }
 }

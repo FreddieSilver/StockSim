@@ -1,6 +1,7 @@
 package dev.freddiesilver.stocksim.repositories.user
 
 import dev.freddiesilver.stocksim.UserRepository
+import dev.freddiesilver.stocksim.entities.UserEntity
 import dev.freddiesilver.stocksim.mappers.UserMapper
 import dev.freddiesilver.stocksim.user.Balance
 import dev.freddiesilver.stocksim.user.User
@@ -12,11 +13,9 @@ class UserRepositoryJpa(
 ) : UserRepository {
 
     override fun createUser(username: String, balance: BigDecimal): User {
-        val entity = UserMapper.toEntity(
-            User(
-                username = Username(username),
-                balance = Balance(balance)
-            )
+        val entity = UserEntity(
+            username = username,
+            balance = balance
         )
         return UserMapper.toDomain(jpa.save(entity))
     }

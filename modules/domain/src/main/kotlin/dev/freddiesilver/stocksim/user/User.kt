@@ -5,7 +5,7 @@ import java.math.BigDecimal
 data class User(
     val id: Long = 0,
     val username: Username,
-    var balance: Balance
+    var balance: Balance = Balance(BigDecimal.ZERO),
 ){
     fun deposit(amount: BigDecimal) {
         require(amount > BigDecimal.ZERO) { "Deposit amount must be positive" }

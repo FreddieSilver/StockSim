@@ -19,7 +19,7 @@ class StockEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "company_id", referencedColumnName = "id", nullable = false)
     val company: CompanyEntity,
 
