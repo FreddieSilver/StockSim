@@ -21,27 +21,21 @@ class TradeOrderEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
-
     // Notice we link to the UserEntity and StockEntity directly here
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     val user: UserEntity,
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "stock_id", nullable = false)
     val stock: StockEntity,
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     val type: OrderType,
-
     @Column(nullable = false)
     val quantity: Int,
-
     @Column(nullable = false, precision = 19, scale = 4)
     val priceAtOrder: BigDecimal,
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    var status: OrderStatus
+    var status: OrderStatus,
 )

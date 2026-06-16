@@ -15,20 +15,20 @@ class TransactionManagerJpa(
     private val companyJpaRepository: CompanyJpaRepository,
     private val stockJpaRepository: StockJpaRepository,
     private val tradeOrderJpaRepository: TradeOrderJpaRepository,
-    private val holdingJpaRepository: HoldingJpaRepository
+    private val holdingJpaRepository: HoldingJpaRepository,
 ) : TransactionManager {
-
     override fun <R> run(block: Transaction.() -> R): R =
         transactionTemplate.execute { status ->
-            val transaction = TransactionJpa(
-                status = status,
-                userJpaRepository = userJpaRepository,
-                tokenJpaRepository = tokenJpaRepository,
-                companyJpaRepository = companyJpaRepository,
-                stockJpaRepository = stockJpaRepository,
-                tradeOrderJpaRepository = tradeOrderJpaRepository,
-                holdingJpaRepository = holdingJpaRepository
-            )
+            val transaction =
+                TransactionJpa(
+                    status = status,
+                    userJpaRepository = userJpaRepository,
+                    tokenJpaRepository = tokenJpaRepository,
+                    companyJpaRepository = companyJpaRepository,
+                    stockJpaRepository = stockJpaRepository,
+                    tradeOrderJpaRepository = tradeOrderJpaRepository,
+                    holdingJpaRepository = holdingJpaRepository,
+                )
             block(transaction)
         } ?: throw IllegalStateException("Transaction returned null")
 }

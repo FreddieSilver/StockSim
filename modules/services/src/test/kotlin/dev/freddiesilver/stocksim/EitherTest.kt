@@ -4,7 +4,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class EitherTest {
-
     @Test
     fun `Right holds success value`() {
         val either = success(42)
@@ -16,7 +15,6 @@ class EitherTest {
         val either = failure("error")
         assertEquals("error", either.value)
     }
-
 
     @Test
     fun `Right with null value`() {

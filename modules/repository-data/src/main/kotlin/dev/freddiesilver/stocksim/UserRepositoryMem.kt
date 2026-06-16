@@ -1,14 +1,14 @@
 package dev.freddiesilver.stocksim
 
-import dev.freddiesilver.stocksim.user.User
-import dev.freddiesilver.stocksim.user.Username
 import dev.freddiesilver.stocksim.user.Email
 import dev.freddiesilver.stocksim.user.PasswordValidationInfo
+import dev.freddiesilver.stocksim.user.User
+import dev.freddiesilver.stocksim.user.Username
 import dev.freddiesilver.stocksim.user.auth.token.Token
 import dev.freddiesilver.stocksim.user.auth.token.TokenValidationInfo
 import java.time.Instant
 
-class UserRepositoryMem: UserRepository {
+class UserRepositoryMem : UserRepository {
     private val users = mutableListOf<User>()
     private val tokens = mutableListOf<Token>()
     private var nextId = 1L
@@ -17,18 +17,17 @@ class UserRepositoryMem: UserRepository {
         username: Username,
         email: Email,
         password: PasswordValidationInfo,
-    ): User = User(
-        id = nextId++,
-        username = username,
-        email = email,
-        passwordValidationInfo = password,
-    ).also{
-        users.add(it)
-    }
+    ): User =
+        User(
+            id = nextId++,
+            username = username,
+            email = email,
+            passwordValidationInfo = password,
+        ).also {
+            users.add(it)
+        }
 
-    override fun findByEmail(email: String): User? =
-        users.firstOrNull { it.email.value == email }
-
+    override fun findByEmail(email: String): User? = users.firstOrNull { it.email.value == email }
 
     override fun getTokenByTokenValidationInfo(tokenValidationInfo: TokenValidationInfo): Pair<User, Token>? =
         tokens.firstOrNull { it.tokenValidationInfo == tokenValidationInfo }?.let {
@@ -68,22 +67,20 @@ class UserRepositoryMem: UserRepository {
         return count
     }
 
-    override fun findById(id: Long): User? =
-        users.firstOrNull { it.id == id }
+    override fun findById(id: Long): User? = users.firstOrNull { it.id == id }
 
+    override fun findAll(): List<User> = users.toList()
 
-    override fun findAll(): List<User> =
-        users.toList()
-
-    override fun update(entity: User){
+    override fun update(entity: User) {
         if (entity.id == 0L) {
-            val newUser = User(
-                id = nextId++,
-                username = entity.username,
-                email = entity.email,
-                passwordValidationInfo = entity.passwordValidationInfo,
-                balance = entity.balance
-            )
+            val newUser =
+                User(
+                    id = nextId++,
+                    username = entity.username,
+                    email = entity.email,
+                    passwordValidationInfo = entity.passwordValidationInfo,
+                    balance = entity.balance,
+                )
             users.add(newUser)
         } else {
             users.removeIf { it.id == entity.id }
@@ -95,6 +92,5 @@ class UserRepositoryMem: UserRepository {
         users.removeIf { it.id == id }
     }
 
-    override fun clear() =
-        users.clear()
+    override fun clear() = users.clear()
 }

@@ -5,9 +5,9 @@ import dev.freddiesilver.stocksim.repositories.holding.HoldingJpaRepository
 import dev.freddiesilver.stocksim.repositories.stock.StockJpaRepository
 import dev.freddiesilver.stocksim.repositories.tradeorder.TradeOrderJpaRepository
 import dev.freddiesilver.stocksim.repositories.user.TokenJpaRepository
+import dev.freddiesilver.stocksim.repositories.user.UserJpaRepository
 import dev.freddiesilver.stocksim.transaction.TransactionManagerJpa
 import dev.freddiesilver.stocksim.transaction.TransactionManagerMem
-import dev.freddiesilver.stocksim.repositories.user.UserJpaRepository
 import dev.freddiesilver.stocksim.user.auth.UsersDomainConfig
 import dev.freddiesilver.stocksim.user.auth.token.Sha256TokenEncoder
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -21,7 +21,6 @@ import java.time.Duration
 
 @SpringBootApplication
 class StockSimApplication {
-
     @Bean
     @Profile("mem")
     fun trxManagerMem() = TransactionManagerMem()
@@ -35,7 +34,7 @@ class StockSimApplication {
         companyJpaRepository: CompanyJpaRepository,
         stockJpaRepository: StockJpaRepository,
         tradeOrderJpaRepository: TradeOrderJpaRepository,
-        holdingJpaRepository: HoldingJpaRepository
+        holdingJpaRepository: HoldingJpaRepository,
     ) = TransactionManagerJpa(
         transactionTemplate,
         userJpaRepository,
@@ -43,7 +42,7 @@ class StockSimApplication {
         companyJpaRepository,
         stockJpaRepository,
         tradeOrderJpaRepository,
-        holdingJpaRepository
+        holdingJpaRepository,
     )
 
     @Bean

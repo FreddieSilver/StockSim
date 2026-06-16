@@ -14,16 +14,12 @@ class TokenEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
-
     @Column(name = "token_validation_info", nullable = false, unique = true, length = 255)
     val tokenValidationInfo: String,
-
     @Column(name = "user_id", nullable = false)
     val userId: Long,
-
     @Column(name = "created_at", nullable = false)
     val createdAt: Instant,
-
     @Column(name = "last_used_at", nullable = false)
     var lastUsedAt: Instant,
 )

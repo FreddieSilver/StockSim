@@ -17,23 +17,24 @@ import java.math.BigDecimal
 
 @Service
 class TradeOrderService(private val trxManager: TransactionManager) {
-
     fun placeOrder(
         userId: Long,
         stockId: Long,
         type: OrderType,
         quantity: Int,
-        totalPrice: Price
+        totalPrice: Price,
     ): Either<TradeOrderError, TradeOrder> =
         trxManager.run {
             if (quantity <= 0) {
                 return@run failure(TradeOrderError.InvalidOrderDetails("Quantity must be greater than zero"))
             }
 
-            val user = userRepo.findById(userId)
-                ?: return@run failure(TradeOrderError.UserNotFound())
-            val stock = stockRepo.findById(stockId)
-                ?: return@run failure(TradeOrderError.StockNotFound())
+            val user =
+                userRepo.findById(userId)
+                    ?: return@run failure(TradeOrderError.UserNotFound())
+            val stock =
+                stockRepo.findById(stockId)
+                    ?: return@run failure(TradeOrderError.StockNotFound())
 
             return@run when (type) {
                 OrderType.BUY -> executeBuyOrder(user, stock, quantity, totalPrice)
@@ -45,7 +46,7 @@ class TradeOrderService(private val trxManager: TransactionManager) {
         user: User,
         stock: Stock,
         quantity: Int,
-        totalPrice: Price
+        totalPrice: Price,
     ): Either<TradeOrderError, TradeOrder> {
         return try {
             if (user.balance.value < totalPrice.value) {
@@ -63,12 +64,13 @@ class TradeOrderService(private val trxManager: TransactionManager) {
                 holdingRepo.createHolding(user.id, stock.id, quantity)
             }
 
-            val order = tradeOrderRepo.createOrder(
-                user = user,
-                stock = stock,
-                type = OrderType.BUY,
-                quantity = quantity
-            )
+            val order =
+                tradeOrderRepo.createOrder(
+                    user = user,
+                    stock = stock,
+                    type = OrderType.BUY,
+                    quantity = quantity,
+                )
             success(order)
         } catch (e: Exception) {
             rollbackBuy(user, stock.id, quantity, totalPrice.value)
@@ -80,10 +82,11 @@ class TradeOrderService(private val trxManager: TransactionManager) {
         user: User,
         stock: Stock,
         quantity: Int,
-        totalPrice: Price
+        totalPrice: Price,
     ): Either<TradeOrderError, TradeOrder> {
-        val holding = holdingRepo.findByUserAndStock(user.id, stock.id)
-            ?: return failure(TradeOrderError.InsufficientHoldings("You do not own this stock"))
+        val holding =
+            holdingRepo.findByUserAndStock(user.id, stock.id)
+                ?: return failure(TradeOrderError.InsufficientHoldings("You do not own this stock"))
 
         if (holding.quantity < quantity) {
             return failure(TradeOrderError.InsufficientHoldings("Required: $quantity, owned: ${holding.quantity}"))
@@ -91,20 +94,22 @@ class TradeOrderService(private val trxManager: TransactionManager) {
 
         return try {
             holding.removeQuantity(quantity)
-            if (holding.quantity == 0)
+            if (holding.quantity == 0) {
                 holdingRepo.deleteById(holding.id)
-            else
+            } else {
                 holdingRepo.update(holding)
+            }
 
             user.deposit(totalPrice.value)
             userRepo.update(user)
 
-            val order = tradeOrderRepo.createOrder(
-                user = user,
-                stock = stock,
-                type = OrderType.SELL,
-                quantity = quantity
-            )
+            val order =
+                tradeOrderRepo.createOrder(
+                    user = user,
+                    stock = stock,
+                    type = OrderType.SELL,
+                    quantity = quantity,
+                )
             success(order)
         } catch (e: Exception) {
             rollbackSell(user, holding, quantity, totalPrice.value)
@@ -112,7 +117,12 @@ class TradeOrderService(private val trxManager: TransactionManager) {
         }
     }
 
-    private fun Transaction.rollbackBuy(user: User, stockId: Long, quantity: Int, amount: BigDecimal) {
+    private fun Transaction.rollbackBuy(
+        user: User,
+        stockId: Long,
+        quantity: Int,
+        amount: BigDecimal,
+    ) {
         try {
             user.deposit(amount)
             userRepo.update(user)
@@ -128,7 +138,12 @@ class TradeOrderService(private val trxManager: TransactionManager) {
         }
     }
 
-    private fun Transaction.rollbackSell(user: User, holding: Holding, quantity: Int, amount: BigDecimal) {
+    private fun Transaction.rollbackSell(
+        user: User,
+        holding: Holding,
+        quantity: Int,
+        amount: BigDecimal,
+    ) {
         try {
             holding.addQuantity(quantity)
             holdingRepo.update(holding)

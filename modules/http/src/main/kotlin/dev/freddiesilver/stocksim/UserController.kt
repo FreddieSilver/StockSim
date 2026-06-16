@@ -1,14 +1,14 @@
 package dev.freddiesilver.stocksim
 
-import dev.freddiesilver.stocksim.dto.`in`.UserCreateDto
-import dev.freddiesilver.stocksim.dto.`in`.UserLoginDto
-import dev.freddiesilver.stocksim.dto.out.UserHomeResponseDto
-import dev.freddiesilver.stocksim.dto.out.UserLoginResponseDto
+import dev.freddiesilver.stocksim.dto.input.UserCreateDto
+import dev.freddiesilver.stocksim.dto.input.UserLoginDto
+import dev.freddiesilver.stocksim.dto.output.UserHomeResponseDto
+import dev.freddiesilver.stocksim.dto.output.UserLoginResponseDto
 import dev.freddiesilver.stocksim.user.AuthService
-import dev.freddiesilver.stocksim.user.error.AuthError
-import dev.freddiesilver.stocksim.user.error.UserError
 import dev.freddiesilver.stocksim.user.UserService
 import dev.freddiesilver.stocksim.user.auth.AuthenticatedUser
+import dev.freddiesilver.stocksim.user.error.AuthError
+import dev.freddiesilver.stocksim.user.error.UserError
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -19,15 +19,17 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class UserController(
     private val authService: AuthService,
-    private val userService: UserService
+    private val userService: UserService,
 ) {
-
     @PostMapping("/users")
-    fun createUser(@RequestBody input: UserCreateDto): ResponseEntity<*> {
+    fun createUser(
+        @RequestBody input: UserCreateDto,
+    ): ResponseEntity<*> {
         return when (val result = authService.registerUser(input.username, input.email, input.password)) {
-            is Success -> ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(mapOf("token" to result.value.token))
+            is Success ->
+                ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(mapOf("token" to result.value.token))
 
             is Failure ->
                 when (val error = result.value) {
@@ -39,7 +41,9 @@ class UserController(
     }
 
     @PostMapping("/users/login")
-    fun login(@RequestBody input: UserLoginDto): ResponseEntity<*> {
+    fun login(
+        @RequestBody input: UserLoginDto,
+    ): ResponseEntity<*> {
         return when (val result = authService.login(input.email, input.password)) {
             is Success -> {
                 ResponseEntity
@@ -73,7 +77,7 @@ class UserController(
                             name = res.value.username.value,
                             email = res.value.email.value,
                             balance = res.value.balance.value.toDouble(),
-                        )
+                        ),
                     )
             is Failure ->
                 when (val error = res.value) {

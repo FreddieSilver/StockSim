@@ -7,7 +7,6 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 class CompanyNameTest {
-
     @Test
     fun `company name stores value correctly`() {
         val name = CompanyName("Apple Inc.")
@@ -49,5 +48,4 @@ class CompanyNameTest {
         val name = CompanyName("Apple Inc.")
         assertEquals("Apple Inc.", name.toString())
     }
-
 }

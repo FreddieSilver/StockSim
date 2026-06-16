@@ -23,7 +23,6 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class TradeOrderRepositoryMemTest {
-
     private lateinit var repo: TradeOrderRepository
 
     @BeforeTest
@@ -31,34 +30,35 @@ class TradeOrderRepositoryMemTest {
         repo = TradeOrderRepositoryMem()
     }
 
-    private fun createTestUser() = User(
-        id = 1L,
-        username = Username("testuser"),
-        email = Email("testuser@example.com"),
-        passwordValidationInfo = PasswordValidationInfo("hashed_pw"),
-        balance = Balance(BigDecimal("10000.00"))
-    )
+    private fun createTestUser() =
+        User(
+            id = 1L,
+            username = Username("testuser"),
+            email = Email("testuser@example.com"),
+            passwordValidationInfo = PasswordValidationInfo("hashed_pw"),
+            balance = Balance(BigDecimal("10000.00")),
+        )
 
     private fun createTestCompany(
         ticker: String = "AAPL",
-        name: String = "Apple Inc."
+        name: String = "Apple Inc.",
     ) = Company(
         id = 1L,
         name = CompanyName(name),
         ticker = Ticker(ticker),
         description = Description("Test company"),
         volatility = 0.02,
-        drift = 0.001
+        drift = 0.001,
     )
 
     private fun createTestStock(
         ticker: String = "AAPL",
         name: String = "Apple Inc.",
-        price: BigDecimal = BigDecimal("150.00")
+        price: BigDecimal = BigDecimal("150.00"),
     ) = Stock(
         id = 1L,
         company = createTestCompany(ticker, name),
-        price = Price(price)
+        price = Price(price),
     )
 
     @Test
@@ -113,7 +113,14 @@ class TradeOrderRepositoryMemTest {
     @Test
     fun `findByUserId returns only that users orders`() {
         val user1 = createTestUser()
-        val user2 = User(id = 2L, username = Username("other"), email = Email("other@example.com"), passwordValidationInfo = PasswordValidationInfo("hashed_pw"), balance = Balance(BigDecimal("5000.00")))
+        val user2 =
+            User(
+                id = 2L,
+                username = Username("other"),
+                email = Email("other@example.com"),
+                passwordValidationInfo = PasswordValidationInfo("hashed_pw"),
+                balance = Balance(BigDecimal("5000.00")),
+            )
         repo.createOrder(user1, createTestStock(), OrderType.BUY, 10)
         repo.createOrder(user1, createTestStock(), OrderType.SELL, 5)
         repo.createOrder(user2, createTestStock(), OrderType.BUY, 20)
@@ -155,14 +162,15 @@ class TradeOrderRepositoryMemTest {
 
     @Test
     fun `update with id zero creates new order with generated id`() {
-        val order = TradeOrder(
-            user = createTestUser(),
-            stock = createTestStock(),
-            type = OrderType.BUY,
-            quantity = 10,
-            priceValueAtOrder = BigDecimal("150.00"),
-            status = OrderStatus.PENDING
-        )
+        val order =
+            TradeOrder(
+                user = createTestUser(),
+                stock = createTestStock(),
+                type = OrderType.BUY,
+                quantity = 10,
+                priceValueAtOrder = BigDecimal("150.00"),
+                status = OrderStatus.PENDING,
+            )
         repo.update(order)
         val all = repo.findAll()
         assertEquals(1, all.size)
@@ -171,14 +179,15 @@ class TradeOrderRepositoryMemTest {
 
     @Test
     fun `update with id zero preserves priceAtOrder`() {
-        val order = TradeOrder(
-            user = createTestUser(),
-            stock = createTestStock(),
-            type = OrderType.BUY,
-            quantity = 10,
-            priceValueAtOrder = BigDecimal("199.99"),
-            status = OrderStatus.PENDING
-        )
+        val order =
+            TradeOrder(
+                user = createTestUser(),
+                stock = createTestStock(),
+                type = OrderType.BUY,
+                quantity = 10,
+                priceValueAtOrder = BigDecimal("199.99"),
+                status = OrderStatus.PENDING,
+            )
         repo.update(order)
         val all = repo.findAll()
         assertEquals(BigDecimal("199.99"), all[0].priceValueAtOrder)

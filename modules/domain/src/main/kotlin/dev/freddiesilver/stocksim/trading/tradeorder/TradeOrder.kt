@@ -11,5 +11,5 @@ data class TradeOrder(
     val type: OrderType,
     val quantity: Int,
     val priceValueAtOrder: BigDecimal,
-    var status: OrderStatus
+    var status: OrderStatus,
 )

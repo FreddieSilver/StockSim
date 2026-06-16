@@ -8,20 +8,21 @@ import dev.freddiesilver.stocksim.user.User
 import dev.freddiesilver.stocksim.user.Username
 
 object UserMapper {
+    fun toDomain(entity: UserEntity): User =
+        User(
+            id = entity.id,
+            username = Username(entity.username),
+            email = Email(entity.email),
+            passwordValidationInfo = PasswordValidationInfo(entity.passwordValidationInfo),
+            balance = Balance(entity.balance),
+        )
 
-    fun toDomain(entity: UserEntity): User = User(
-        id = entity.id,
-        username = Username(entity.username),
-        email = Email(entity.email),
-        passwordValidationInfo = PasswordValidationInfo(entity.passwordValidationInfo),
-        balance = Balance(entity.balance)
-    )
-
-    fun toEntity(domain: User): UserEntity = UserEntity(
-        id = domain.id,
-        username = domain.username.value,
-        email = domain.email.value,
-        passwordValidationInfo = domain.passwordValidationInfo.validationInfo,
-        balance = domain.balance.value
-    )
+    fun toEntity(domain: User): UserEntity =
+        UserEntity(
+            id = domain.id,
+            username = domain.username.value,
+            email = domain.email.value,
+            passwordValidationInfo = domain.passwordValidationInfo.validationInfo,
+            balance = domain.balance.value,
+        )
 }

@@ -5,35 +5,33 @@ import dev.freddiesilver.stocksim.trading.stock.Price
 import dev.freddiesilver.stocksim.trading.stock.Stock
 import java.math.BigDecimal
 
-class StockRepositoryMem: StockRepository {
+class StockRepositoryMem : StockRepository {
     private val stocks = mutableListOf<Stock>()
     private var nextId = 1L
 
     override fun createStock(
         ticker: String,
         company: Company,
-        initialPrice: BigDecimal
+        initialPrice: BigDecimal,
     ): Stock =
         Stock(
             id = nextId++,
             company = company,
-            price = Price(initialPrice)
+            price = Price(initialPrice),
         ).also { stocks.add(it) }
 
+    override fun findById(id: Long): Stock? = stocks.firstOrNull { it.id == id }
 
-    override fun findById(id: Long): Stock? =
-        stocks.firstOrNull { it.id == id }
-
-    override fun findAll(): List<Stock> =
-        stocks.toList()
+    override fun findAll(): List<Stock> = stocks.toList()
 
     override fun update(entity: Stock) {
         if (entity.id == 0L) {
-            val newStock = Stock(
-                id = nextId++,
-                entity.company,
-                price = entity.price
-            )
+            val newStock =
+                Stock(
+                    id = nextId++,
+                    entity.company,
+                    price = entity.price,
+                )
             stocks.add(newStock)
         } else {
             stocks.removeIf { it.id == entity.id }
@@ -45,9 +43,7 @@ class StockRepositoryMem: StockRepository {
         stocks.removeIf { it.id == id }
     }
 
-    override fun clear() =
-        stocks.clear()
-
+    override fun clear() = stocks.clear()
 
     override fun updateAllPrices(stocks: List<Stock>) =
         stocks.forEach { stock ->
@@ -56,7 +52,10 @@ class StockRepositoryMem: StockRepository {
             }
         }
 
-    override fun updatePrice(id: Long, newPrice: BigDecimal) {
+    override fun updatePrice(
+        id: Long,
+        newPrice: BigDecimal,
+    ) {
         stocks.find { it.id == id }?.let { existing ->
             existing.price = Price(newPrice)
         }

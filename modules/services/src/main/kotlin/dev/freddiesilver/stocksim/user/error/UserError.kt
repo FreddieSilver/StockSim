@@ -18,5 +18,4 @@ sealed class UserError(
     class InvalidDepositAmount(
         additionalMessage: String,
     ) : UserError("Invalid deposit amount: $additionalMessage")
-
 }

@@ -20,9 +20,8 @@ class TransactionJpa(
     companyJpaRepository: CompanyJpaRepository,
     stockJpaRepository: StockJpaRepository,
     tradeOrderJpaRepository: TradeOrderJpaRepository,
-    holdingJpaRepository: HoldingJpaRepository
+    holdingJpaRepository: HoldingJpaRepository,
 ) : Transaction {
-
     override val userRepo = UserRepositoryJpa(userJpaRepository, tokenJpaRepository)
     override val stockRepo = StockRepositoryJpa(stockJpaRepository, companyJpaRepository)
     override val tradeOrderRepo = TradeOrderRepositoryJpa(tradeOrderJpaRepository, userJpaRepository, stockJpaRepository)

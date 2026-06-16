@@ -10,20 +10,24 @@ import java.math.BigDecimal
 
 @Service
 class UserService(
-    private val trxManager: TransactionManager
+    private val trxManager: TransactionManager,
 ) {
-
-    fun createUser(username: String, email: String, password: String): Either<UserError, User> =
+    fun createUser(
+        username: String,
+        email: String,
+        password: String,
+    ): Either<UserError, User> =
         trxManager.run {
             try {
                 if (userRepo.findByEmail(email) != null) {
                     return@run failure(UserError.UserAlreadyExists())
                 }
-                val user = userRepo.createUser(
-                    Username(username),
-                    Email(email),
-                    PasswordValidationInfo(password),
-                )
+                val user =
+                    userRepo.createUser(
+                        Username(username),
+                        Email(email),
+                        PasswordValidationInfo(password),
+                    )
                 success(user)
             } catch (e: Exception) {
                 failure(UserError.InvalidUserData(e.message ?: "Unknown error"))
@@ -40,7 +44,10 @@ class UserService(
             }
         }
 
-    fun deposit(userId: Long, amount: BigDecimal): Either<UserError, User> =
+    fun deposit(
+        userId: Long,
+        amount: BigDecimal,
+    ): Either<UserError, User> =
         trxManager.run {
             val user = userRepo.findById(userId) ?: return@run failure(UserError.UserNotFound())
 
@@ -53,7 +60,10 @@ class UserService(
             }
         }
 
-    fun withdraw(userId: Long, amount: BigDecimal): Either<UserError, User> =
+    fun withdraw(
+        userId: Long,
+        amount: BigDecimal,
+    ): Either<UserError, User> =
         trxManager.run {
             val user = userRepo.findById(userId) ?: return@run failure(UserError.UserNotFound())
 

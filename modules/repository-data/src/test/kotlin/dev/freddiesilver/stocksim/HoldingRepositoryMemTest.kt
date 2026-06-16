@@ -9,7 +9,6 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class HoldingRepositoryMemTest {
-
     private lateinit var repo: HoldingRepository
 
     @BeforeTest

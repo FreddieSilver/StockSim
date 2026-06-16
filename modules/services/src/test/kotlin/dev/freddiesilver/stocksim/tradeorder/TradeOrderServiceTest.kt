@@ -22,7 +22,6 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 class TradeOrderServiceTest {
-
     private lateinit var service: TradeOrderService
     private lateinit var trxManager: TransactionManager
 
@@ -34,24 +33,26 @@ class TradeOrderServiceTest {
 
     private fun createTestUser(): Long =
         trxManager.run {
-            val user = userRepo.createUser(
-                dev.freddiesilver.stocksim.user.Username("testuser"),
-                dev.freddiesilver.stocksim.user.Email("testuser@example.com"),
-                dev.freddiesilver.stocksim.user.PasswordValidationInfo("hashed_pw"),
-            )
+            val user =
+                userRepo.createUser(
+                    dev.freddiesilver.stocksim.user.Username("testuser"),
+                    dev.freddiesilver.stocksim.user.Email("testuser@example.com"),
+                    dev.freddiesilver.stocksim.user.PasswordValidationInfo("hashed_pw"),
+                )
             user.deposit(BigDecimal("10000.00"))
             userRepo.update(user)
             user.id
         }
 
-    private fun createTestCompany() = Company(
-        id = 0L,
-        name = CompanyName("Apple Inc."),
-        ticker = Ticker("AAPL"),
-        description = Description("Technology company"),
-        volatility = 0.02,
-        drift = 0.001
-    )
+    private fun createTestCompany() =
+        Company(
+            id = 0L,
+            name = CompanyName("Apple Inc."),
+            ticker = Ticker("AAPL"),
+            description = Description("Technology company"),
+            volatility = 0.02,
+            drift = 0.001,
+        )
 
     private fun createTestStock(): Long =
         trxManager.run {
@@ -59,8 +60,7 @@ class TradeOrderServiceTest {
             stock.id
         }
 
-    private fun getTestStock(stockId: Long) =
-        trxManager.run { stockRepo.findById(stockId)!! }
+    private fun getTestStock(stockId: Long) = trxManager.run { stockRepo.findById(stockId)!! }
 
     // --- Validation tests ---
 

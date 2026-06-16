@@ -7,8 +7,8 @@ import dev.freddiesilver.stocksim.TradeOrderRepository
 import dev.freddiesilver.stocksim.UserRepository
 
 interface Transaction {
-    val userRepo : UserRepository
-    val stockRepo : StockRepository
+    val userRepo: UserRepository
+    val stockRepo: StockRepository
     val tradeOrderRepo: TradeOrderRepository
     val holdingRepo: HoldingRepository
     val companyRepo: CompanyRepository

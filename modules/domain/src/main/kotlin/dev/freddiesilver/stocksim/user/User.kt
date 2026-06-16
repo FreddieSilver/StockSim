@@ -8,7 +8,7 @@ data class User(
     val email: Email,
     val passwordValidationInfo: PasswordValidationInfo,
     var balance: Balance = Balance(STARTING_BALANCE_VALUE),
-){
+) {
     fun deposit(amount: BigDecimal) {
         require(amount > BigDecimal.ZERO) { "Deposit amount must be positive" }
         this.balance = Balance(this.balance.value + amount)
@@ -22,7 +22,7 @@ data class User(
         this.balance = Balance(this.balance.value - amount)
     }
 
-    companion object{
+    companion object {
         private val STARTING_BALANCE_VALUE = BigDecimal(0)
     }
 }

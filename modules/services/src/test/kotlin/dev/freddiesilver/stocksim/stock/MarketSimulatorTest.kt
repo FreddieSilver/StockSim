@@ -15,7 +15,6 @@ import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
 class MarketSimulatorTest {
-
     private lateinit var simulator: MarketSimulator
     private lateinit var trxManager: TransactionManagerMem
 
@@ -28,14 +27,14 @@ class MarketSimulatorTest {
         ticker: String,
         name: String,
         volatility: Double,
-        drift: Double = 0.0
+        drift: Double = 0.0,
     ) = Company(
         id = 0L,
         name = CompanyName(name),
         ticker = Ticker(ticker),
         description = Description("Test company"),
         volatility = volatility,
-        drift = drift
+        drift = drift,
     )
 
     private fun createStock(
@@ -43,7 +42,7 @@ class MarketSimulatorTest {
         name: String,
         price: String,
         volatility: Double,
-        drift: Double = 0.0
+        drift: Double = 0.0,
     ): Stock {
         val company = createCompany(ticker, name, volatility, drift)
         return trxManager.run { stockRepo.createStock(ticker, company, BigDecimal(price)) }
@@ -123,8 +122,10 @@ class MarketSimulatorTest {
         simulator = MarketSimulator(trxManager, Random(42))
         repeat(100) { simulator.simulateStep() }
         val stock = trxManager.run { stockRepo.findAll().first() }
-        assertTrue(stock.price.value > BigDecimal("100.00"),
-            "Expected price > 100.00 after 100 steps with 5% drift, got ${stock.price.value}")
+        assertTrue(
+            stock.price.value > BigDecimal("100.00"),
+            "Expected price > 100.00 after 100 steps with 5% drift, got ${stock.price.value}",
+        )
     }
 
     @Test

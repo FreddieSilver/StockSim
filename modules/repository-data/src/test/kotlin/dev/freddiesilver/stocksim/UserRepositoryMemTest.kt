@@ -1,10 +1,10 @@
 package dev.freddiesilver.stocksim
 
-import dev.freddiesilver.stocksim.user.User
-import dev.freddiesilver.stocksim.user.Username
+import dev.freddiesilver.stocksim.user.Balance
 import dev.freddiesilver.stocksim.user.Email
 import dev.freddiesilver.stocksim.user.PasswordValidationInfo
-import dev.freddiesilver.stocksim.user.Balance
+import dev.freddiesilver.stocksim.user.User
+import dev.freddiesilver.stocksim.user.Username
 import java.math.BigDecimal
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -14,7 +14,6 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class UserRepositoryMemTest {
-
     private lateinit var repo: UserRepository
 
     @BeforeTest
@@ -25,11 +24,12 @@ class UserRepositoryMemTest {
     private fun createTestUser(
         username: String,
         email: String = "$username@example.com",
-    ): User = repo.createUser(
-        Username(username),
-        Email(email),
-        PasswordValidationInfo("hashed_$username"),
-    )
+    ): User =
+        repo.createUser(
+            Username(username),
+            Email(email),
+            PasswordValidationInfo("hashed_$username"),
+        )
 
     @Test
     fun `createUser returns user with generated id`() {
@@ -114,13 +114,14 @@ class UserRepositoryMemTest {
     @Test
     fun `update with existing id replaces user`() {
         val user = createTestUser("original")
-        val modifiedUser = User(
-            id = user.id,
-            username = Username("updated"),
-            email = Email("updated@test.com"),
-            passwordValidationInfo = PasswordValidationInfo("hashed"),
-            balance = Balance(BigDecimal("999.00"))
-        )
+        val modifiedUser =
+            User(
+                id = user.id,
+                username = Username("updated"),
+                email = Email("updated@test.com"),
+                passwordValidationInfo = PasswordValidationInfo("hashed"),
+                balance = Balance(BigDecimal("999.00")),
+            )
         repo.update(modifiedUser)
         val found = repo.findById(user.id)!!
         assertEquals("updated", found.username.value)
@@ -128,12 +129,13 @@ class UserRepositoryMemTest {
 
     @Test
     fun `update with id zero creates new user`() {
-        val user = User(
-            username = Username("new"),
-            email = Email("new@test.com"),
-            passwordValidationInfo = PasswordValidationInfo("hashed"),
-            balance = Balance(BigDecimal("100.00"))
-        )
+        val user =
+            User(
+                username = Username("new"),
+                email = Email("new@test.com"),
+                passwordValidationInfo = PasswordValidationInfo("hashed"),
+                balance = Balance(BigDecimal("100.00")),
+            )
         repo.update(user)
         val all = repo.findAll()
         assertEquals(1, all.size)

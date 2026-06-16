@@ -1,15 +1,15 @@
 package dev.freddiesilver.stocksim.tradeorder.error
 
 sealed class TradeOrderError(
-    override val message: String?
-): Exception(message) {
+    override val message: String?,
+) : Exception(message) {
     class StockNotFound : TradeOrderError("Stock not found")
 
     class InvalidOrderDetails(
         additionalMessage: String,
     ) : TradeOrderError("Order details invalid: $additionalMessage")
 
-    class UserNotFound: TradeOrderError("User not found")
+    class UserNotFound : TradeOrderError("User not found")
 
     class InsufficientBalance(
         additionalMessage: String,

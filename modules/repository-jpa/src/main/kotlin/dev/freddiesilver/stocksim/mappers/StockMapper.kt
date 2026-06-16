@@ -9,7 +9,7 @@ object StockMapper {
         return Stock(
             id = stockEntity.id,
             company = CompanyMapper.toDomain(stockEntity.company),
-            price = Price(stockEntity.price)
+            price = Price(stockEntity.price),
         )
     }
 
@@ -17,7 +17,7 @@ object StockMapper {
         return StockEntity(
             id = stock.id,
             company = CompanyMapper.toEntity(stock.company),
-            price = stock.price.value
+            price = stock.price.value,
         )
     }
 }

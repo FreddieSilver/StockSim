@@ -1,12 +1,12 @@
 package dev.freddiesilver.stocksim.user
 
-import dev.freddiesilver.stocksim.transaction.Transaction
-import dev.freddiesilver.stocksim.user.auth.AuthenticatedUser
-import dev.freddiesilver.stocksim.user.auth.UsersDomainConfig
 import dev.freddiesilver.stocksim.Either
 import dev.freddiesilver.stocksim.failure
 import dev.freddiesilver.stocksim.success
+import dev.freddiesilver.stocksim.transaction.Transaction
 import dev.freddiesilver.stocksim.transaction.TransactionManager
+import dev.freddiesilver.stocksim.user.auth.AuthenticatedUser
+import dev.freddiesilver.stocksim.user.auth.UsersDomainConfig
 import dev.freddiesilver.stocksim.user.auth.token.Token
 import dev.freddiesilver.stocksim.user.auth.token.TokenEncoder
 import dev.freddiesilver.stocksim.user.error.AuthError
@@ -26,8 +26,11 @@ class AuthService(
     private val trxManager: TransactionManager,
     private val clock: Clock,
 ) {
-
-    fun registerUser(name: String, email: String, password: String): Either<AuthError, AuthenticatedUser> {
+    fun registerUser(
+        name: String,
+        email: String,
+        password: String,
+    ): Either<AuthError, AuthenticatedUser> {
         if (!isSafePassword(password)) {
             return failure(AuthError.BadPassword())
         }
@@ -45,7 +48,10 @@ class AuthService(
         }
     }
 
-    fun login(email: String, password: String): Either<AuthError, AuthenticatedUser> {
+    fun login(
+        email: String,
+        password: String,
+    ): Either<AuthError, AuthenticatedUser> {
         if (email.isBlank() || password.isBlank()) return failure(AuthError.UserOrPasswordAreInvalid())
 
         return trxManager.run {
@@ -90,21 +96,22 @@ class AuthService(
     private fun Transaction.createAndSaveToken(userId: Long): Token {
         val tokenValue = generateSecureTokenString()
         val now = clock.instant()
-        val token = Token(
-            tokenValidationInfo = tokenEncoder.createValidationInformation(tokenValue),
-            userId = userId,
-            createdAt = now,
-            lastUsedAt = now,
-        )
+        val token =
+            Token(
+                tokenValidationInfo = tokenEncoder.createValidationInformation(tokenValue),
+                userId = userId,
+                createdAt = now,
+                lastUsedAt = now,
+            )
         userRepo.createToken(token, config.maxTokensPerUser)
         return token
     }
 
     private fun isSafePassword(password: String) =
         password.length >= 8 &&
-                password.any { it.isDigit() } &&
-                password.any { it.isUpperCase() } &&
-                password.any { it.isLowerCase() }
+            password.any { it.isDigit() } &&
+            password.any { it.isUpperCase() } &&
+            password.any { it.isLowerCase() }
 
     private fun generateSecureTokenString(): String =
         ByteArray(config.tokenSizeInBytes).let { byteArray ->
@@ -123,7 +130,7 @@ class AuthService(
     private fun isTokenTimeValid(token: Token): Boolean {
         val now = clock.instant()
         return token.createdAt <= now &&
-                Duration.between(token.createdAt, now) <= config.tokenTtl &&
-                Duration.between(token.lastUsedAt, now) <= config.tokenRollingTtl
+            Duration.between(token.createdAt, now) <= config.tokenTtl &&
+            Duration.between(token.lastUsedAt, now) <= config.tokenRollingTtl
     }
 }

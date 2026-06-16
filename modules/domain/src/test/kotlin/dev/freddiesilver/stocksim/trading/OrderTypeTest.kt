@@ -5,7 +5,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class OrderTypeTest {
-
     @Test
     fun `BUY enum value exists`() {
         assertEquals("BUY", OrderType.BUY.name)

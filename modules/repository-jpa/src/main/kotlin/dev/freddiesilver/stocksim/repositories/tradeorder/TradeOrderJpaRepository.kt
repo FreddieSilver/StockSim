@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface TradeOrderJpaRepository : JpaRepository<TradeOrderEntity, Long> {
     fun findByUserId(userId: Long): List<TradeOrderEntity>
+
     fun findByStockId(stockId: Long): List<TradeOrderEntity>
+
     fun findByStatus(status: OrderStatus): List<TradeOrderEntity>
 }

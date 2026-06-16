@@ -6,7 +6,6 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 class DescriptionTest {
-
     @Test
     fun `description stores value correctly`() {
         val desc = Description("A technology company")

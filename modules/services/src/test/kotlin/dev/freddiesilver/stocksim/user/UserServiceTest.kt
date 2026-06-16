@@ -11,7 +11,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertIs
 
 class UserServiceTest {
-
     private lateinit var service: UserService
 
     @BeforeTest

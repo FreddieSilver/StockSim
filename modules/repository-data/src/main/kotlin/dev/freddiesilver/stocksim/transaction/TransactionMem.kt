@@ -11,7 +11,7 @@ class TransactionMem(
     override val stockRepo: StockRepository,
     override val tradeOrderRepo: TradeOrderRepository,
     override val holdingRepo: HoldingRepository,
-    override val companyRepo: CompanyRepository
+    override val companyRepo: CompanyRepository,
 ) : Transaction {
     override fun rollback() = throw UnsupportedOperationException()
 }

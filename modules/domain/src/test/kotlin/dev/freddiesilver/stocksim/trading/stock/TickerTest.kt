@@ -6,7 +6,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 
 class TickerTest {
-
     @Test
     fun `ticker stores value correctly`() {
         val ticker = Ticker("AAPL")
@@ -24,7 +23,6 @@ class TickerTest {
         val ticker = Ticker("BRK.B")
         assertEquals("BRK.B", ticker.value)
     }
-
 
     @Test
     fun `tickers with same value are equal`() {

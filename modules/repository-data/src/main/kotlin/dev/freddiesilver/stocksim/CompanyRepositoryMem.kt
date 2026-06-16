@@ -5,8 +5,7 @@ import dev.freddiesilver.stocksim.company.CompanyName
 import dev.freddiesilver.stocksim.company.Description
 import dev.freddiesilver.stocksim.company.Ticker
 
-class CompanyRepositoryMem: CompanyRepository {
-
+class CompanyRepositoryMem : CompanyRepository {
     private val companies = mutableListOf<Company>()
     private var nextId = 1L
 
@@ -15,28 +14,26 @@ class CompanyRepositoryMem: CompanyRepository {
         ticker: String,
         description: String,
         volatility: Double,
-        drift: Double
+        drift: Double,
     ): Company {
-        val company = Company(
-            id = nextId++,
-            name = CompanyName(name),
-            ticker = Ticker(ticker),
-            description = Description(description),
-            volatility = volatility,
-            drift = drift
-        )
+        val company =
+            Company(
+                id = nextId++,
+                name = CompanyName(name),
+                ticker = Ticker(ticker),
+                description = Description(description),
+                volatility = volatility,
+                drift = drift,
+            )
         companies.add(company)
         return company
     }
 
-    override fun findByTicker(ticker: String): Company? =
-        companies.find { it.ticker.value == ticker }
+    override fun findByTicker(ticker: String): Company? = companies.find { it.ticker.value == ticker }
 
-    override fun findById(id: Long): Company? =
-        companies.find { it.id == id }
+    override fun findById(id: Long): Company? = companies.find { it.id == id }
 
-    override fun findAll(): List<Company> =
-        companies.toList()
+    override fun findAll(): List<Company> = companies.toList()
 
     override fun update(entity: Company) {
         val index = companies.indexOfFirst { it.id == entity.id }
@@ -56,6 +53,5 @@ class CompanyRepositoryMem: CompanyRepository {
         }
     }
 
-    override fun clear() =
-        companies.clear()
+    override fun clear() = companies.clear()
 }

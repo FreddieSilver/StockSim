@@ -5,6 +5,14 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface HoldingJpaRepository : JpaRepository<HoldingEntity, Long> {
     fun findByUserId(userId: Long): List<HoldingEntity>
-    fun findByUserIdAndStockId(userId: Long, stockId: Long): HoldingEntity?
-    fun deleteByUserIdAndStockId(userId: Long, stockId: Long)
+
+    fun findByUserIdAndStockId(
+        userId: Long,
+        stockId: Long,
+    ): HoldingEntity?
+
+    fun deleteByUserIdAndStockId(
+        userId: Long,
+        stockId: Long,
+    )
 }

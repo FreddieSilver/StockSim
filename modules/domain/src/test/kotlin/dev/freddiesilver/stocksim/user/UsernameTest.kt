@@ -6,7 +6,6 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 class UsernameTest {
-
     @Test
     fun `valid username is created successfully`() {
         val username = Username("john_doe")

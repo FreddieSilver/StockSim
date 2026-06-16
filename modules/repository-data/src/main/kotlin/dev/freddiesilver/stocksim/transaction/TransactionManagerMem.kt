@@ -6,7 +6,7 @@ import dev.freddiesilver.stocksim.StockRepositoryMem
 import dev.freddiesilver.stocksim.TradeOrderRepositoryMem
 import dev.freddiesilver.stocksim.UserRepositoryMem
 
-class TransactionManagerMem: TransactionManager {
+class TransactionManagerMem : TransactionManager {
     private val userRepo = UserRepositoryMem()
     private val stockRepo = StockRepositoryMem()
     private val tradeOrderRepo = TradeOrderRepositoryMem()
@@ -20,7 +20,7 @@ class TransactionManagerMem: TransactionManager {
                 stockRepo = stockRepo,
                 tradeOrderRepo = tradeOrderRepo,
                 holdingRepo = holdingRepo,
-                companyRepo = companyRepo
+                companyRepo = companyRepo,
             ),
         )
 }

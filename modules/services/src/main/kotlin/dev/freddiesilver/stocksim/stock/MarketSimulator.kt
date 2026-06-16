@@ -18,9 +18,8 @@ import kotlin.random.Random
 @Service
 class MarketSimulator(
     private val trxManager: TransactionManager,
-    private val random: Random
+    private val random: Random,
 ) {
-
     /**
      * Advance the market by one tick. Returns the list of updated stocks.
      */
@@ -30,16 +29,17 @@ class MarketSimulator(
             stocks.map { stock ->
                 val volatility = stock.company.volatility
                 val drift = stock.company.drift
-                val newPrice = if (volatility == 0.0 && drift == 0.0) {
-                    stock.price.value
-                } else {
-                    val changePercent = drift + random.nextDouble(-volatility, volatility)
-                    val multiplier = BigDecimal.ONE + changePercent.toBigDecimal()
-                    stock.price.value
-                        .multiply(multiplier)
-                        .setScale(2, RoundingMode.HALF_UP)
-                        .max(MIN_PRICE)
-                }
+                val newPrice =
+                    if (volatility == 0.0 && drift == 0.0) {
+                        stock.price.value
+                    } else {
+                        val changePercent = drift + random.nextDouble(-volatility, volatility)
+                        val multiplier = BigDecimal.ONE + changePercent.toBigDecimal()
+                        stock.price.value
+                            .multiply(multiplier)
+                            .setScale(2, RoundingMode.HALF_UP)
+                            .max(MIN_PRICE)
+                    }
                 stockRepo.updatePrice(stock.id, newPrice)
                 stockRepo.findById(stock.id)!!
             }

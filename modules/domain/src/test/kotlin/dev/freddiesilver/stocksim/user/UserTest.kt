@@ -7,12 +7,11 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 class UserTest {
-
     private fun createTestUser(
         id: Long = 0,
         username: String = "testuser",
         email: String = "test@example.com",
-        balance: BigDecimal = BigDecimal("100.00")
+        balance: BigDecimal = BigDecimal("100.00"),
     ) = User(
         id = id,
         username = Username(username),
@@ -23,12 +22,13 @@ class UserTest {
 
     @Test
     fun `user is created with correct fields`() {
-        val user = createTestUser(
-            id = 1L,
-            username = "testuser",
-            email = "test@example.com",
-            balance = BigDecimal("5000.00")
-        )
+        val user =
+            createTestUser(
+                id = 1L,
+                username = "testuser",
+                email = "test@example.com",
+                balance = BigDecimal("5000.00"),
+            )
         assertEquals(1L, user.id)
         assertEquals("testuser", user.username.value)
         assertEquals("test@example.com", user.email.value)
@@ -51,9 +51,10 @@ class UserTest {
     @Test
     fun `deposit with zero amount throws exception`() {
         val user = createTestUser()
-        val exception = assertFailsWith<IllegalArgumentException> {
-            user.deposit(BigDecimal.ZERO)
-        }
+        val exception =
+            assertFailsWith<IllegalArgumentException> {
+                user.deposit(BigDecimal.ZERO)
+            }
         assertTrue(exception.message!!.contains("positive"))
     }
 
@@ -75,9 +76,10 @@ class UserTest {
     @Test
     fun `withdraw with insufficient balance throws exception`() {
         val user = createTestUser()
-        val exception = assertFailsWith<IllegalArgumentException> {
-            user.withdraw(BigDecimal("200.00"))
-        }
+        val exception =
+            assertFailsWith<IllegalArgumentException> {
+                user.withdraw(BigDecimal("200.00"))
+            }
         assertTrue(exception.message!!.contains("Insufficient"))
     }
 

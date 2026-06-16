@@ -12,7 +12,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertIs
 
 class StockServiceTest {
-
     private lateinit var service: StockService
 
     @BeforeTest

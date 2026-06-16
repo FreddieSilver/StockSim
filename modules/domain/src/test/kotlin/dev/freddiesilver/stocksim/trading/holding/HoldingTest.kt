@@ -6,15 +6,15 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 class HoldingTest {
-
     @Test
     fun `holding is created with correct fields`() {
-        val holding = Holding(
-            id = 1L,
-            userId = 10L,
-            stockId = 20L,
-            quantity = 100
-        )
+        val holding =
+            Holding(
+                id = 1L,
+                userId = 10L,
+                stockId = 20L,
+                quantity = 100,
+            )
         assertEquals(1L, holding.id)
         assertEquals(10L, holding.userId)
         assertEquals(20L, holding.stockId)
@@ -23,29 +23,32 @@ class HoldingTest {
 
     @Test
     fun `holding with default id is created`() {
-        val holding = Holding(
-            userId = 10L,
-            stockId = 20L,
-            quantity = 50
-        )
+        val holding =
+            Holding(
+                userId = 10L,
+                stockId = 20L,
+                quantity = 50,
+            )
         assertEquals(0L, holding.id)
     }
 
     @Test
     fun `holding with zero quantity is valid`() {
-        val holding = Holding(
-            userId = 10L,
-            stockId = 20L,
-            quantity = 0
-        )
+        val holding =
+            Holding(
+                userId = 10L,
+                stockId = 20L,
+                quantity = 0,
+            )
         assertEquals(0, holding.quantity)
     }
 
     @Test
     fun `negative quantity throws exception`() {
-        val exception = assertFailsWith<IllegalArgumentException> {
-            Holding(userId = 10L, stockId = 20L, quantity = -1)
-        }
+        val exception =
+            assertFailsWith<IllegalArgumentException> {
+                Holding(userId = 10L, stockId = 20L, quantity = -1)
+            }
         assertTrue(exception.message!!.contains("negative"))
     }
 
@@ -59,9 +62,10 @@ class HoldingTest {
     @Test
     fun `addQuantity with zero throws exception`() {
         val holding = Holding(userId = 10L, stockId = 20L, quantity = 100)
-        val exception = assertFailsWith<IllegalArgumentException> {
-            holding.addQuantity(0)
-        }
+        val exception =
+            assertFailsWith<IllegalArgumentException> {
+                holding.addQuantity(0)
+            }
         assertTrue(exception.message!!.contains("positive"))
     }
 
@@ -90,9 +94,10 @@ class HoldingTest {
     @Test
     fun `removeQuantity with zero throws exception`() {
         val holding = Holding(userId = 10L, stockId = 20L, quantity = 100)
-        val exception = assertFailsWith<IllegalArgumentException> {
-            holding.removeQuantity(0)
-        }
+        val exception =
+            assertFailsWith<IllegalArgumentException> {
+                holding.removeQuantity(0)
+            }
         assertTrue(exception.message!!.contains("positive"))
     }
 
@@ -107,9 +112,10 @@ class HoldingTest {
     @Test
     fun `removeQuantity more than owned throws exception`() {
         val holding = Holding(userId = 10L, stockId = 20L, quantity = 100)
-        val exception = assertFailsWith<IllegalArgumentException> {
-            holding.removeQuantity(101)
-        }
+        val exception =
+            assertFailsWith<IllegalArgumentException> {
+                holding.removeQuantity(101)
+            }
         assertTrue(exception.message!!.contains("Cannot remove more than owned"))
     }
 }

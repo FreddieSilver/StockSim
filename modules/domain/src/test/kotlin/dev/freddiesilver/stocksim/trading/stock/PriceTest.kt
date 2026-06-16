@@ -8,7 +8,6 @@ import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
 class PriceTest {
-
     @Test
     fun `price with positive value is created successfully`() {
         val price = Price(BigDecimal("150.00"))
@@ -23,9 +22,10 @@ class PriceTest {
 
     @Test
     fun `negative price throws exception`() {
-        val exception = assertFailsWith<IllegalArgumentException> {
-            Price(BigDecimal("-0.01"))
-        }
+        val exception =
+            assertFailsWith<IllegalArgumentException> {
+                Price(BigDecimal("-0.01"))
+            }
         assertTrue(exception.message!!.contains("negative"))
     }
 

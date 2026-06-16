@@ -7,7 +7,6 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 class BalanceTest {
-
     @Test
     fun `balance with positive value is created successfully`() {
         val balance = Balance(BigDecimal("100.00"))
@@ -22,10 +21,10 @@ class BalanceTest {
 
     @Test
     fun `negative balance throws exception`() {
-        val exception = assertFailsWith<IllegalArgumentException> {
-            Balance(BigDecimal("-1.00"))
-        }
+        val exception =
+            assertFailsWith<IllegalArgumentException> {
+                Balance(BigDecimal("-1.00"))
+            }
         assertTrue(exception.message!!.contains("negative"))
     }
-
 }

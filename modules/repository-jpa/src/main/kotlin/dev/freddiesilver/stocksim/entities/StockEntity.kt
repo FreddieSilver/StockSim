@@ -17,11 +17,9 @@ class StockEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
-
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "company_id", referencedColumnName = "id", nullable = false)
     val company: CompanyEntity,
-
     @Column(nullable = false, precision = 19, scale = 4)
-    var price: BigDecimal
+    var price: BigDecimal,
 )

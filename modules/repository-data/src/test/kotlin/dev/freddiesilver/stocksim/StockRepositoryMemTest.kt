@@ -15,7 +15,6 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class StockRepositoryMemTest {
-
     private lateinit var repo: StockRepository
 
     @BeforeTest
@@ -27,14 +26,14 @@ class StockRepositoryMemTest {
         ticker: String = "AAPL",
         name: String = "Apple Inc.",
         volatility: Double = 0.02,
-        drift: Double = 0.001
+        drift: Double = 0.001,
     ) = Company(
         id = 0L,
         name = CompanyName(name),
         ticker = Ticker(ticker),
         description = Description("Test company"),
         volatility = volatility,
-        drift = drift
+        drift = drift,
     )
 
     private fun createTestStock(
@@ -42,7 +41,7 @@ class StockRepositoryMemTest {
         name: String = "Apple Inc.",
         price: String = "150.00",
         volatility: Double = 0.02,
-        drift: Double = 0.001
+        drift: Double = 0.001,
     ) = repo.createStock(ticker, createTestCompany(ticker, name, volatility, drift), BigDecimal(price))
 
     @Test
@@ -130,10 +129,11 @@ class StockRepositoryMemTest {
     @Test
     fun `update with id zero creates new stock`() {
         val company = createTestCompany(ticker = "NEW", name = "New Company")
-        val stock = Stock(
-            company = company,
-            price = Price(BigDecimal("10.00"))
-        )
+        val stock =
+            Stock(
+                company = company,
+                price = Price(BigDecimal("10.00")),
+            )
         repo.update(stock)
         assertEquals(1, repo.findAll().size)
     }

@@ -15,36 +15,36 @@ import java.time.Instant
 
 class UserRepositoryJpa(
     private val jpa: UserJpaRepository,
-    private val tokenJpa: TokenJpaRepository
+    private val tokenJpa: TokenJpaRepository,
 ) : UserRepository {
+    // user
 
-    //user
-
-    override fun createUser(username: Username, email: Email, password: PasswordValidationInfo): User {
-        val entity = UserEntity(
-            username = username.value,
-            email = email.value,
-            passwordValidationInfo = password.validationInfo,
-            balance = BigDecimal.ZERO
-        )
+    override fun createUser(
+        username: Username,
+        email: Email,
+        password: PasswordValidationInfo,
+    ): User {
+        val entity =
+            UserEntity(
+                username = username.value,
+                email = email.value,
+                passwordValidationInfo = password.validationInfo,
+                balance = BigDecimal.ZERO,
+            )
         return UserMapper.toDomain(jpa.save(entity))
     }
 
-    override fun findByEmail(email: String): User? =
-        jpa.findByEmail(email)?.let { UserMapper.toDomain(it) }
+    override fun findByEmail(email: String): User? = jpa.findByEmail(email)?.let { UserMapper.toDomain(it) }
 
-    override fun findById(id: Long): User? =
-        jpa.findById(id).orElse(null)?.let { UserMapper.toDomain(it) }
+    override fun findById(id: Long): User? = jpa.findById(id).orElse(null)?.let { UserMapper.toDomain(it) }
 
-    override fun findAll(): List<User> =
-        jpa.findAll().map { UserMapper.toDomain(it) }
+    override fun findAll(): List<User> = jpa.findAll().map { UserMapper.toDomain(it) }
 
     override fun update(entity: User) {
         jpa.save(UserMapper.toEntity(entity))
     }
 
-    override fun deleteById(id: Long) =
-        jpa.deleteById(id)
+    override fun deleteById(id: Long) = jpa.deleteById(id)
 
     override fun clear() {
         tokenJpa.deleteAll() // tokens reference users, delete first
@@ -53,7 +53,10 @@ class UserRepositoryJpa(
 
     // --- Token ---
 
-    override fun createToken(token: Token, maxTokens: Int): Token {
+    override fun createToken(
+        token: Token,
+        maxTokens: Int,
+    ): Token {
         val currentCount = tokenJpa.countByUserId(token.userId)
 
         if (currentCount >= maxTokens) {
@@ -68,16 +71,22 @@ class UserRepositoryJpa(
     }
 
     override fun getTokenByTokenValidationInfo(tokenValidationInfo: TokenValidationInfo): Pair<User, Token>? {
-        val tokenEntity = tokenJpa.findByTokenValidationInfo(tokenValidationInfo.validationInfo)
-            ?: return null
-        val userEntity = jpa.findById(tokenEntity.id).orElse(null)
-            ?: return null
+        val tokenEntity =
+            tokenJpa.findByTokenValidationInfo(tokenValidationInfo.validationInfo)
+                ?: return null
+        val userEntity =
+            jpa.findById(tokenEntity.id).orElse(null)
+                ?: return null
         return UserMapper.toDomain(userEntity) to TokenMapper.toDomain(tokenEntity)
     }
 
-    override fun updateTokenLastUsed(token: Token, now: Instant) {
-        val entity = tokenJpa.findByTokenValidationInfo(token.tokenValidationInfo.validationInfo)
-            ?: return
+    override fun updateTokenLastUsed(
+        token: Token,
+        now: Instant,
+    ) {
+        val entity =
+            tokenJpa.findByTokenValidationInfo(token.tokenValidationInfo.validationInfo)
+                ?: return
         entity.lastUsedAt = now
         tokenJpa.save(entity)
     }

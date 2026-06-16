@@ -4,8 +4,8 @@ data class Holding(
     val id: Long = 0,
     val userId: Long,
     val stockId: Long,
-    var quantity: Int
-){
+    var quantity: Int,
+) {
     init {
         require(quantity >= 0) { "Portfolio quantity cannot be negative" }
     }

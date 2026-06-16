@@ -6,5 +6,5 @@ data class Company(
     val ticker: Ticker,
     val description: Description,
     val volatility: Double,
-    val drift: Double
+    val drift: Double,
 )

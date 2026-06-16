@@ -4,10 +4,9 @@ import dev.freddiesilver.stocksim.user.AuthService
 import dev.freddiesilver.stocksim.user.auth.AuthenticatedUser
 import org.springframework.stereotype.Component
 
-
 @Component
 class RequestTokenProcessor(
-    val authService: AuthService
+    val authService: AuthService,
 ) {
     fun processAuthorizationHeaderValue(authorizationValue: String?): AuthenticatedUser? {
         if (authorizationValue == null) {

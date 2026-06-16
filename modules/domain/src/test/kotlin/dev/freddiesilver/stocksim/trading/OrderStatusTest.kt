@@ -5,7 +5,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class OrderStatusTest {
-
     @Test
     fun `PENDING enum value exists`() {
         assertEquals("PENDING", OrderStatus.PENDING.name)

@@ -1,4 +1,4 @@
-package dev.freddiesilver.stocksim.dto.out
+package dev.freddiesilver.stocksim.dto.output
 
 data class UserHomeResponseDto(
     val id: Long,
