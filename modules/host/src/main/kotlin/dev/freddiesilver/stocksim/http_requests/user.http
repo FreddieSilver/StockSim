@@ -11,14 +11,14 @@ Content-Type: application/json
 
 ###TEST USER INFO
 GET http://localhost:8080/me
-Authorization: bearer MVevR5LusV6ejN-xIL1SKhKTx4QPMFCYO79SOlM56mE=
+Authorization: bearer 7ILcyORC04AlYp3_bK_cZFFzhb8f9tsjO4xhWmiXQl8
 Content-Type: application/json
 
 
 ###TEST LOGOUT
 
 POST http://localhost:8080/users/logout
-Authorization: bearer MVevR5LusV6ejN-xIL1SKhKTx4QPMFCYO79SOlM56mE=
+Authorization: bearer 7ILcyORC04AlYp3_bK_cZFFzhb8f9tsjO4xhWmiXQl8
 Content-Type: application/json
 
 

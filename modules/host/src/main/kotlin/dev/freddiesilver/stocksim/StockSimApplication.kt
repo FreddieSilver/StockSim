@@ -4,6 +4,7 @@ import dev.freddiesilver.stocksim.repositories.company.CompanyJpaRepository
 import dev.freddiesilver.stocksim.repositories.holding.HoldingJpaRepository
 import dev.freddiesilver.stocksim.repositories.stock.StockJpaRepository
 import dev.freddiesilver.stocksim.repositories.tradeorder.TradeOrderJpaRepository
+import dev.freddiesilver.stocksim.repositories.user.TokenJpaRepository
 import dev.freddiesilver.stocksim.transaction.TransactionManagerJpa
 import dev.freddiesilver.stocksim.transaction.TransactionManagerMem
 import dev.freddiesilver.stocksim.repositories.user.UserJpaRepository
@@ -30,6 +31,7 @@ class StockSimApplication {
     fun trxManagerJpa(
         transactionTemplate: TransactionTemplate,
         userJpaRepository: UserJpaRepository,
+        tokenJpaRepository: TokenJpaRepository,
         companyJpaRepository: CompanyJpaRepository,
         stockJpaRepository: StockJpaRepository,
         tradeOrderJpaRepository: TradeOrderJpaRepository,
@@ -37,6 +39,7 @@ class StockSimApplication {
     ) = TransactionManagerJpa(
         transactionTemplate,
         userJpaRepository,
+        tokenJpaRepository,
         companyJpaRepository,
         stockJpaRepository,
         tradeOrderJpaRepository,

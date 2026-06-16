@@ -1,5 +1,5 @@
 package dev.freddiesilver.stocksim.dto.out
 
-class UserLoginResponseDto(
+data class UserLoginResponseDto(
     val token: String
 )

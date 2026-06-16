@@ -1,6 +1,6 @@
 package dev.freddiesilver.stocksim.dto.`in`
 
-class UserLoginDto (
+data class UserLoginDto (
     val email: String,
     val password : String
 )

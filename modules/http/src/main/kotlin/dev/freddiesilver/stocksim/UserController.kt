@@ -27,7 +27,7 @@ class UserController(
         return when (val result = authService.registerUser(input.username, input.email, input.password)) {
             is Success -> ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(result.value)
+                .body(mapOf("token" to result.value.token))
 
             is Failure ->
                 when (val error = result.value) {
