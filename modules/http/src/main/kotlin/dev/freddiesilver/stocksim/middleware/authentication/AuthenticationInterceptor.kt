@@ -1,6 +1,6 @@
 package dev.freddiesilver.stocksim.middleware.authentication
 
-import dev.freddiesilver.stocksim.RequestTokenProcessor
+import dev.freddiesilver.stocksim.helpers.RequestTokenProcessor
 import dev.freddiesilver.stocksim.middleware.resolvers.AuthenticatedUserArgumentResolver
 import dev.freddiesilver.stocksim.user.auth.AuthenticatedUser
 import jakarta.servlet.http.HttpServletRequest

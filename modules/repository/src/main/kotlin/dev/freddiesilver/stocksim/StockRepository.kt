@@ -6,7 +6,6 @@ import java.math.BigDecimal
 
 interface StockRepository : Repository<Stock> {
     fun createStock(
-        ticker: String,
         company: Company,
         initialPrice: BigDecimal,
     ): Stock

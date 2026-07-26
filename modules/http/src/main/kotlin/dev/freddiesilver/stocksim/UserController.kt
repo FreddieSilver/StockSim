@@ -1,9 +1,10 @@
 package dev.freddiesilver.stocksim
 
-import dev.freddiesilver.stocksim.dto.input.UserCreateDto
-import dev.freddiesilver.stocksim.dto.input.UserLoginDto
-import dev.freddiesilver.stocksim.dto.output.UserHomeResponseDto
-import dev.freddiesilver.stocksim.dto.output.UserLoginResponseDto
+import dev.freddiesilver.stocksim.dto.user.input.UserCreateDto
+import dev.freddiesilver.stocksim.dto.user.input.UserLoginDto
+import dev.freddiesilver.stocksim.dto.user.output.UserHomeResponseDto
+import dev.freddiesilver.stocksim.dto.user.output.UserLoginResponseDto
+import dev.freddiesilver.stocksim.helpers.errorResponse
 import dev.freddiesilver.stocksim.user.AuthService
 import dev.freddiesilver.stocksim.user.UserService
 import dev.freddiesilver.stocksim.user.auth.AuthenticatedUser

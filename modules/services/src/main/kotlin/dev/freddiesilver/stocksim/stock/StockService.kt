@@ -1,62 +1,39 @@
 package dev.freddiesilver.stocksim.stock
 
-import dev.freddiesilver.stocksim.Either
-import dev.freddiesilver.stocksim.company.Company
-import dev.freddiesilver.stocksim.company.CompanyName
-import dev.freddiesilver.stocksim.company.Description
-import dev.freddiesilver.stocksim.company.Ticker
-import dev.freddiesilver.stocksim.failure
+import dev.freddiesilver.stocksim.*
 import dev.freddiesilver.stocksim.stock.error.StockError
-import dev.freddiesilver.stocksim.success
 import dev.freddiesilver.stocksim.trading.stock.Stock
-import dev.freddiesilver.stocksim.transaction.TransactionManager
+import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 
 @Service
-class StockService(private val trxManager: TransactionManager) {
+@Transactional
+class StockService(
+    private val companyRepo: CompanyRepository,
+    private val stockRepo: StockRepository,
+) {
     fun createStock(
-        ticker: String,
-        companyName: String,
+        companyId: Long,
         initialPrice: Double,
-    ): Either<StockError, Stock> =
-        trxManager.run {
-            try {
-                val company =
-                    Company(
-                        id = 0L,
-                        name = CompanyName(companyName),
-                        ticker = Ticker(ticker),
-                        description = Description("No description provided"),
-                        volatility = 0.02,
-                        drift = 0.001,
-                    )
-                val newStock = stockRepo.createStock(ticker, company, initialPrice.toBigDecimal())
-                success(newStock)
-            } catch (e: Exception) {
-                failure(StockError.InvalidStockData(e.message ?: "Unknown error"))
-            }
-        }
+    ): Either<StockError, Stock> {
+        val company = companyRepo.findById(companyId) ?: return failure(StockError.CompanyNotFound())
+        val newStock = stockRepo.createStock(company, initialPrice.toBigDecimal())
+        return success(newStock)
+    }
 
     fun getStockById(id: Long): Either<StockError, Stock> =
-        trxManager.run {
             stockRepo.findById(id)?.let { stock ->
                 success(stock)
             } ?: failure(StockError.StockNotFound())
-        }
 
     fun updateStockPrice(
         id: Long,
         newPrice: Double,
-    ): Either<StockError, Stock> =
-        trxManager.run {
-            try {
-                stockRepo.updatePrice(id, newPrice.toBigDecimal())
-                val updatedStock =
-                    stockRepo.findById(id)
-                        ?: return@run failure(StockError.StockNotFound())
-                success(updatedStock)
-            } catch (e: Exception) {
-                failure(StockError.InvalidStockData(e.message ?: "Unknown error"))
-            }
-        }
+    ): Either<StockError, Stock> {
+        stockRepo.updatePrice(id, newPrice.toBigDecimal())
+        val updatedStock = stockRepo.findById(id)
+            ?: return failure(StockError.StockNotFound())
+        return success(updatedStock)
+    }
+
 }

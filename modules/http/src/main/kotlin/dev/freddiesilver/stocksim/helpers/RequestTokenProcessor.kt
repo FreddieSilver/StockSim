@@ -1,4 +1,4 @@
-package dev.freddiesilver.stocksim
+package dev.freddiesilver.stocksim.helpers
 
 import dev.freddiesilver.stocksim.user.AuthService
 import dev.freddiesilver.stocksim.user.auth.AuthenticatedUser

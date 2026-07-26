@@ -13,7 +13,6 @@ class StockRepositoryJpa(
     private val companyJpaRepository: CompanyJpaRepository,
 ) : StockRepository {
     override fun createStock(
-        ticker: String,
         company: Company,
         initialPrice: BigDecimal,
     ): Stock {

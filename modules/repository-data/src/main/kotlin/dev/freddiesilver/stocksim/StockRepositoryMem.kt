@@ -5,12 +5,12 @@ import dev.freddiesilver.stocksim.trading.stock.Price
 import dev.freddiesilver.stocksim.trading.stock.Stock
 import java.math.BigDecimal
 
+
 class StockRepositoryMem : StockRepository {
     private val stocks = mutableListOf<Stock>()
     private var nextId = 1L
 
     override fun createStock(
-        ticker: String,
         company: Company,
         initialPrice: BigDecimal,
     ): Stock =

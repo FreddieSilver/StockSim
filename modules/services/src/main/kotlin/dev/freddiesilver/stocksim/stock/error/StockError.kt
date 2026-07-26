@@ -8,4 +8,6 @@ sealed class StockError(
     class InvalidStockData(
         additionalMessage: String,
     ) : StockError("Invalid stock data: $additionalMessage")
+
+    class CompanyNotFound(): StockError("Company not found")
 }

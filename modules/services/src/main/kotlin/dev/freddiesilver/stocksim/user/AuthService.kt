@@ -1,15 +1,15 @@
 package dev.freddiesilver.stocksim.user
 
 import dev.freddiesilver.stocksim.Either
+import dev.freddiesilver.stocksim.UserRepository
 import dev.freddiesilver.stocksim.failure
 import dev.freddiesilver.stocksim.success
-import dev.freddiesilver.stocksim.transaction.Transaction
-import dev.freddiesilver.stocksim.transaction.TransactionManager
 import dev.freddiesilver.stocksim.user.auth.AuthenticatedUser
 import dev.freddiesilver.stocksim.user.auth.UsersDomainConfig
 import dev.freddiesilver.stocksim.user.auth.token.Token
 import dev.freddiesilver.stocksim.user.auth.token.TokenEncoder
 import dev.freddiesilver.stocksim.user.error.AuthError
+import jakarta.transaction.Transactional
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import java.security.SecureRandom
@@ -19,11 +19,12 @@ import java.util.Base64.getUrlDecoder
 import java.util.Base64.getUrlEncoder
 
 @Service
+@Transactional
 class AuthService(
     private val passwordEncoder: PasswordEncoder,
     private val tokenEncoder: TokenEncoder,
     private val config: UsersDomainConfig,
-    private val trxManager: TransactionManager,
+    private val userRepo: UserRepository,
     private val clock: Clock,
 ) {
     fun registerUser(
@@ -35,17 +36,15 @@ class AuthService(
             return failure(AuthError.BadPassword())
         }
 
-        return trxManager.run {
             if (userRepo.findByEmail(email) != null) {
-                return@run failure(AuthError.EmailInUse())
+                return failure(AuthError.EmailInUse())
             }
 
             val passwordInfo = PasswordValidationInfo(passwordEncoder.encode(password))
             val user = userRepo.createUser(Username(name), Email(email), passwordInfo)
 
             val token = createAndSaveToken(user.id)
-            success(AuthenticatedUser(user, token.tokenValidationInfo.validationInfo))
-        }
+            return success(AuthenticatedUser(user, token.tokenValidationInfo.validationInfo))
     }
 
     fun login(
@@ -54,46 +53,36 @@ class AuthService(
     ): Either<AuthError, AuthenticatedUser> {
         if (email.isBlank() || password.isBlank()) return failure(AuthError.UserOrPasswordAreInvalid())
 
-        return trxManager.run {
-            val user = userRepo.findByEmail(email) ?: return@run failure(AuthError.UserOrPasswordAreInvalid())
+        val user = userRepo.findByEmail(email) ?: return failure(AuthError.UserOrPasswordAreInvalid())
 
-            if (!passwordEncoder.matches(password, user.passwordValidationInfo.validationInfo)) {
-                return@run failure(AuthError.UserOrPasswordAreInvalid())
-            }
-
-            val token = createAndSaveToken(user.id)
-            success(AuthenticatedUser(user, token.tokenValidationInfo.validationInfo))
+        if (!passwordEncoder.matches(password, user.passwordValidationInfo.validationInfo)) {
+            return failure(AuthError.UserOrPasswordAreInvalid())
         }
-    }
+
+        val token = createAndSaveToken(user.id)
+        return success(AuthenticatedUser(user, token.tokenValidationInfo.validationInfo))
+        }
 
     fun getUserByToken(tokenString: String): User? {
         if (!isValidTokenFormat(tokenString)) return null
-
-        return trxManager.run {
-            val tokenInfo = tokenEncoder.createValidationInformation(tokenString)
-            val userAndToken = userRepo.getTokenByTokenValidationInfo(tokenInfo) ?: return@run null
-
-            val token = userAndToken.second
-            if (isTokenTimeValid(token)) {
-                userRepo.updateTokenLastUsed(token, clock.instant())
-                userAndToken.first
-            } else {
-                null
-            }
-        }
+        val tokenInfo = tokenEncoder.createValidationInformation(tokenString)
+        val userAndToken = userRepo.getTokenByTokenValidationInfo(tokenInfo) ?: return null
+        val token = userAndToken.second
+        if (isTokenTimeValid(token)) {
+            userRepo.updateTokenLastUsed(token, clock.instant())
+            return userAndToken.first
+        } else return null
     }
 
     fun revokeToken(tokenString: String): Boolean {
-        return trxManager.run {
-            val tokenInfo = tokenEncoder.createValidationInformation(tokenString)
-            userRepo.removeTokenByValidationInfo(tokenInfo)
-            true
-        }
+        val tokenInfo = tokenEncoder.createValidationInformation(tokenString)
+        userRepo.removeTokenByValidationInfo(tokenInfo)
+        return true
     }
 
     // helpers
 
-    private fun Transaction.createAndSaveToken(userId: Long): Token {
+    private fun createAndSaveToken(userId: Long): Token {
         val tokenValue = generateSecureTokenString()
         val now = clock.instant()
         val token =

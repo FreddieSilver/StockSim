@@ -1,4 +1,4 @@
-package dev.freddiesilver.stocksim
+package dev.freddiesilver.stocksim.helpers
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
