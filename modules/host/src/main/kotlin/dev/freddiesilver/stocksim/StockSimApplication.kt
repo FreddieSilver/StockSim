@@ -11,9 +11,6 @@ import java.time.Duration
 
 @SpringBootApplication
 class StockSimApplication {
-
-
-
     @Bean
     fun passwordEncoder() = BCryptPasswordEncoder()
 

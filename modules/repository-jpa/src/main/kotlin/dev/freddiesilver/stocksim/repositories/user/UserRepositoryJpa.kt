@@ -75,7 +75,7 @@ class UserRepositoryJpa(
             tokenJpa.findByTokenValidationInfo(tokenValidationInfo.validationInfo)
                 ?: return null
         val userEntity =
-            jpa.findById(tokenEntity.id).orElse(null)
+            jpa.findById(tokenEntity.userId).orElse(null)
                 ?: return null
         return UserMapper.toDomain(userEntity) to TokenMapper.toDomain(tokenEntity)
     }

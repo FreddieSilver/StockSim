@@ -1,6 +1,7 @@
 package dev.freddiesilver.stocksim.stock
 
 import dev.freddiesilver.stocksim.StockRepository
+import dev.freddiesilver.stocksim.trading.stock.Price
 import dev.freddiesilver.stocksim.trading.stock.Stock
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
@@ -27,22 +28,23 @@ class MarketSimulator(
      */
     fun simulateStep(): List<Stock> {
         val stocks = stockRepo.findAll()
-        stocks.map { stock ->
+        stocks.forEach { stock ->
             val volatility = stock.company.volatility
             val drift = stock.company.drift
-            val newPrice =
-                if (volatility == 0.0 && drift == 0.0) {
-                    stock.price.value
-                } else {
-                    val changePercent = drift + random.nextDouble(-volatility, volatility)
-                    val multiplier = BigDecimal.ONE + changePercent.toBigDecimal()
-                    stock.price.value
-                        .multiply(multiplier)
-                        .setScale(2, RoundingMode.HALF_UP)
-                        .max(MIN_PRICE_VALUE.toBigDecimal())
-                }
-            stockRepo.updatePrice(stock.id, newPrice)
-            stockRepo.findById(stock.id)!!
+            stock.price =
+                Price(
+                    if (volatility == 0.0 && drift == 0.0) {
+                        stock.price.value
+                    } else {
+                        val changePercent = drift + random.nextDouble(-volatility, volatility)
+                        val multiplier = BigDecimal.ONE + changePercent.toBigDecimal()
+                        stock.price.value
+                            .multiply(multiplier)
+                            .setScale(2, RoundingMode.HALF_UP)
+                            .max(MIN_PRICE_VALUE.toBigDecimal())
+                    },
+                )
+            stockRepo.updateAllPrices(stocks)
         }
         return stocks
     }

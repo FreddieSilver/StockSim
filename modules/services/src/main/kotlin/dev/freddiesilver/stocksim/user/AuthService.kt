@@ -1,9 +1,6 @@
 package dev.freddiesilver.stocksim.user
 
-import dev.freddiesilver.stocksim.Either
 import dev.freddiesilver.stocksim.UserRepository
-import dev.freddiesilver.stocksim.failure
-import dev.freddiesilver.stocksim.success
 import dev.freddiesilver.stocksim.user.auth.AuthenticatedUser
 import dev.freddiesilver.stocksim.user.auth.UsersDomainConfig
 import dev.freddiesilver.stocksim.user.auth.token.Token
@@ -31,37 +28,30 @@ class AuthService(
         name: String,
         email: String,
         password: String,
-    ): Either<AuthError, AuthenticatedUser> {
-        if (!isSafePassword(password)) {
-            return failure(AuthError.BadPassword())
-        }
+    ): AuthenticatedUser {
+        if (!isSafePassword(password)) throw AuthError.BadPassword()
+        if (userRepo.findByEmail(email) != null) throw AuthError.EmailInUse()
 
-            if (userRepo.findByEmail(email) != null) {
-                return failure(AuthError.EmailInUse())
-            }
-
-            val passwordInfo = PasswordValidationInfo(passwordEncoder.encode(password))
-            val user = userRepo.createUser(Username(name), Email(email), passwordInfo)
-
-            val token = createAndSaveToken(user.id)
-            return success(AuthenticatedUser(user, token.tokenValidationInfo.validationInfo))
+        val passwordInfo = PasswordValidationInfo(passwordEncoder.encode(password))
+        val user = userRepo.createUser(Username(name), Email(email), passwordInfo)
+        val token = createAndSaveToken(user.id)
+        return AuthenticatedUser(user, token.tokenValidationInfo.validationInfo)
     }
 
     fun login(
         email: String,
         password: String,
-    ): Either<AuthError, AuthenticatedUser> {
-        if (email.isBlank() || password.isBlank()) return failure(AuthError.UserOrPasswordAreInvalid())
-
-        val user = userRepo.findByEmail(email) ?: return failure(AuthError.UserOrPasswordAreInvalid())
+    ): AuthenticatedUser {
+        if (email.isBlank() || password.isBlank()) throw AuthError.IncorrectCredentials()
+        val user = userRepo.findByEmail(email) ?: throw AuthError.IncorrectCredentials()
 
         if (!passwordEncoder.matches(password, user.passwordValidationInfo.validationInfo)) {
-            return failure(AuthError.UserOrPasswordAreInvalid())
+            throw AuthError.IncorrectCredentials()
         }
 
         val token = createAndSaveToken(user.id)
-        return success(AuthenticatedUser(user, token.tokenValidationInfo.validationInfo))
-        }
+        return AuthenticatedUser(user, token.tokenValidationInfo.validationInfo)
+    }
 
     fun getUserByToken(tokenString: String): User? {
         if (!isValidTokenFormat(tokenString)) return null
@@ -71,7 +61,9 @@ class AuthService(
         if (isTokenTimeValid(token)) {
             userRepo.updateTokenLastUsed(token, clock.instant())
             return userAndToken.first
-        } else return null
+        } else {
+            return null
+        }
     }
 
     fun revokeToken(tokenString: String): Boolean {

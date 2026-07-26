@@ -4,12 +4,9 @@ import dev.freddiesilver.stocksim.dto.user.input.UserCreateDto
 import dev.freddiesilver.stocksim.dto.user.input.UserLoginDto
 import dev.freddiesilver.stocksim.dto.user.output.UserHomeResponseDto
 import dev.freddiesilver.stocksim.dto.user.output.UserLoginResponseDto
-import dev.freddiesilver.stocksim.helpers.errorResponse
 import dev.freddiesilver.stocksim.user.AuthService
 import dev.freddiesilver.stocksim.user.UserService
 import dev.freddiesilver.stocksim.user.auth.AuthenticatedUser
-import dev.freddiesilver.stocksim.user.error.AuthError
-import dev.freddiesilver.stocksim.user.error.UserError
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -25,66 +22,38 @@ class UserController(
     @PostMapping("/users")
     fun createUser(
         @RequestBody input: UserCreateDto,
-    ): ResponseEntity<*> {
-        return when (val result = authService.registerUser(input.username, input.email, input.password)) {
-            is Success ->
-                ResponseEntity
-                    .status(HttpStatus.CREATED)
-                    .body(mapOf("token" to result.value.token))
-
-            is Failure ->
-                when (val error = result.value) {
-                    is AuthError.BadPassword -> errorResponse(error.message, HttpStatus.BAD_REQUEST)
-                    is AuthError.EmailInUse -> errorResponse(error.message, HttpStatus.BAD_REQUEST)
-                    is AuthError.UserOrPasswordAreInvalid -> errorResponse(error.message, HttpStatus.BAD_REQUEST)
-                }
-        }
+    ): ResponseEntity<UserLoginResponseDto> {
+        val result = authService.registerUser(input.username, input.email, input.password)
+        return ResponseEntity.status(HttpStatus.CREATED).body(UserLoginResponseDto(result.token))
     }
 
     @PostMapping("/users/login")
     fun login(
         @RequestBody input: UserLoginDto,
-    ): ResponseEntity<*> {
-        return when (val result = authService.login(input.email, input.password)) {
-            is Success -> {
-                ResponseEntity
-                    .status(HttpStatus.OK)
-                    .header("Authorization", "Bearer ${result.value.token}")
-                    .body(UserLoginResponseDto(result.value.token))
-            }
-            is Failure ->
-                when (val error = result.value) {
-                    is AuthError.UserOrPasswordAreInvalid -> errorResponse(error.message, HttpStatus.UNAUTHORIZED)
-                    else -> errorResponse("Authentication failed", HttpStatus.BAD_REQUEST)
-                }
-        }
+    ): ResponseEntity<UserLoginResponseDto> {
+        val result = authService.login(input.email, input.password)
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .header("Authorization", "Bearer ${result.token}")
+            .body(UserLoginResponseDto(result.token))
     }
 
     @PostMapping("/users/logout")
-    fun logout(user: AuthenticatedUser): ResponseEntity<*> {
+    fun logout(user: AuthenticatedUser): ResponseEntity<Unit> {
         authService.revokeToken(user.token)
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build<Unit>()
+        return ResponseEntity.noContent().build()
     }
 
     @GetMapping("/me")
-    fun userHome(user: AuthenticatedUser): ResponseEntity<*> {
-        return when (val res = userService.getUserById(user.user.id)) {
-            is Success ->
-                ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(
-                        UserHomeResponseDto(
-                            id = res.value.id,
-                            name = res.value.username.value,
-                            email = res.value.email.value,
-                            balance = res.value.balance.value.toDouble(),
-                        ),
-                    )
-            is Failure ->
-                when (val error = res.value) {
-                    is UserError.UserNotFound -> errorResponse(error.message, HttpStatus.NOT_FOUND)
-                    else -> errorResponse(error.message, HttpStatus.INTERNAL_SERVER_ERROR)
-                }
-        }
+    fun userHome(user: AuthenticatedUser): ResponseEntity<UserHomeResponseDto> {
+        val result = userService.getUserById(user.user.id)
+        return ResponseEntity.ok(
+            UserHomeResponseDto(
+                id = result.id,
+                name = result.username.value,
+                email = result.email.value,
+                balance = result.balance.value.toDouble(),
+            ),
+        )
     }
 }

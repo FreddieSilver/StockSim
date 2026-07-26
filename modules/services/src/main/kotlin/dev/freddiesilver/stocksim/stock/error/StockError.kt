@@ -9,5 +9,5 @@ sealed class StockError(
         additionalMessage: String,
     ) : StockError("Invalid stock data: $additionalMessage")
 
-    class CompanyNotFound(): StockError("Company not found")
+    class CompanyNotFound() : StockError("Company not found")
 }

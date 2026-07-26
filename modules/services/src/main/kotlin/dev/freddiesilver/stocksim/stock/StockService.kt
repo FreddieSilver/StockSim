@@ -1,6 +1,7 @@
 package dev.freddiesilver.stocksim.stock
 
-import dev.freddiesilver.stocksim.*
+import dev.freddiesilver.stocksim.CompanyRepository
+import dev.freddiesilver.stocksim.StockRepository
 import dev.freddiesilver.stocksim.stock.error.StockError
 import dev.freddiesilver.stocksim.trading.stock.Stock
 import jakarta.transaction.Transactional
@@ -15,25 +16,23 @@ class StockService(
     fun createStock(
         companyId: Long,
         initialPrice: Double,
-    ): Either<StockError, Stock> {
-        val company = companyRepo.findById(companyId) ?: return failure(StockError.CompanyNotFound())
+    ): Stock {
+        val company = companyRepo.findById(companyId) ?: throw StockError.CompanyNotFound()
         val newStock = stockRepo.createStock(company, initialPrice.toBigDecimal())
-        return success(newStock)
+        return newStock
     }
 
-    fun getStockById(id: Long): Either<StockError, Stock> =
-            stockRepo.findById(id)?.let { stock ->
-                success(stock)
-            } ?: failure(StockError.StockNotFound())
+    fun getStockById(id: Long): Stock =
+        stockRepo.findById(id) ?: throw StockError.StockNotFound()
 
     fun updateStockPrice(
         id: Long,
         newPrice: Double,
-    ): Either<StockError, Stock> {
+    ): Stock {
         stockRepo.updatePrice(id, newPrice.toBigDecimal())
-        val updatedStock = stockRepo.findById(id)
-            ?: return failure(StockError.StockNotFound())
-        return success(updatedStock)
+        val updatedStock =
+            stockRepo.findById(id)
+                ?: throw StockError.StockNotFound()
+        return updatedStock
     }
-
 }

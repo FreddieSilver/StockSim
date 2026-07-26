@@ -1,0 +1,14 @@
+###TEST CREATE COMPANY
+POST http://localhost:8080/companies
+Content-Type: application/json
+
+{
+  "name" : "Alphabet Inc.",
+  "ticker": "GOOGL",
+  "description": "Leading global company in technology, AI, and cloud computing.",
+  "volatility": 0.385,
+  "drift":  0.125
+}
+
+###TEST GET COMPANY
+GET http://localhost:8080/companies/1

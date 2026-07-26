@@ -1,6 +1,9 @@
 package dev.freddiesilver.stocksim.tradeorder
 
-import dev.freddiesilver.stocksim.*
+import dev.freddiesilver.stocksim.HoldingRepository
+import dev.freddiesilver.stocksim.StockRepository
+import dev.freddiesilver.stocksim.TradeOrderRepository
+import dev.freddiesilver.stocksim.UserRepository
 import dev.freddiesilver.stocksim.tradeorder.error.TradeOrderError
 import dev.freddiesilver.stocksim.trading.stock.Price
 import dev.freddiesilver.stocksim.trading.stock.Stock
@@ -16,7 +19,7 @@ class TradeOrderService(
     private val userRepo: UserRepository,
     private val stockRepo: StockRepository,
     private val holdingRepo: HoldingRepository,
-    private val tradeOrderRepo: TradeOrderRepository
+    private val tradeOrderRepo: TradeOrderRepository,
 ) {
     fun placeOrder(
         userId: Long,
@@ -24,13 +27,12 @@ class TradeOrderService(
         type: OrderType,
         quantity: Int,
         totalPrice: Price,
-    ): Either<TradeOrderError, TradeOrder> {
+    ): TradeOrder {
         if (quantity <= 0) {
-            return failure(TradeOrderError.InvalidOrderDetails("Quantity must be greater than zero"))
+            throw TradeOrderError.InvalidOrderDetails("Quantity must be greater than zero")
         }
-
-        val user = userRepo.findById(userId) ?: return failure(TradeOrderError.UserNotFound())
-        val stock = stockRepo.findById(stockId) ?: return failure(TradeOrderError.StockNotFound())
+        val user = userRepo.findById(userId) ?: throw TradeOrderError.UserNotFound()
+        val stock = stockRepo.findById(stockId) ?: throw TradeOrderError.StockNotFound()
 
         return when (type) {
             OrderType.BUY -> executeBuyOrder(user, stock, quantity, totalPrice)
@@ -43,9 +45,11 @@ class TradeOrderService(
         stock: Stock,
         quantity: Int,
         totalPrice: Price,
-    ): Either<TradeOrderError, TradeOrder> {
+    ): TradeOrder {
         if (user.balance.value < totalPrice.value) {
-            return failure(TradeOrderError.InsufficientBalance("Required: ${totalPrice.value}, available: ${user.balance.value}"))
+            throw TradeOrderError.InsufficientBalance(
+                "Required: ${totalPrice.value}, available: ${user.balance.value}",
+            )
         }
 
         user.withdraw(totalPrice.value)
@@ -55,14 +59,17 @@ class TradeOrderService(
         if (holding != null) {
             holding.addQuantity(quantity)
             holdingRepo.update(holding)
-        } else holdingRepo.createHolding(user.id, stock.id, quantity)
+        } else {
+            holdingRepo.createHolding(user.id, stock.id, quantity)
+        }
         val order =
             tradeOrderRepo.createOrder(
                 user = user,
                 stock = stock,
                 type = OrderType.BUY,
-                quantity = quantity,)
-        return success(order)
+                quantity = quantity,
+            )
+        return order
     }
 
     private fun executeSellOrder(
@@ -70,32 +77,29 @@ class TradeOrderService(
         stock: Stock,
         quantity: Int,
         totalPrice: Price,
-    ): Either<TradeOrderError, TradeOrder> {
+    ): TradeOrder {
         val holding =
             holdingRepo.findByUserAndStock(user.id, stock.id)
-                ?: return failure(TradeOrderError.InsufficientHoldings("You do not own this stock"))
+                ?: throw TradeOrderError.InsufficientHoldings("You do not own this stock")
 
         if (holding.quantity < quantity) {
-            return failure(TradeOrderError.InsufficientHoldings("Required: $quantity, owned: ${holding.quantity}"))
+            throw TradeOrderError.InsufficientHoldings(
+                "Required: $quantity, owned: ${holding.quantity}",
+            )
         }
+        holding.removeQuantity(quantity)
+        holdingRepo.update(holding)
 
-            holding.removeQuantity(quantity)
-            if (holding.quantity == 0) {
-                holdingRepo.deleteById(holding.id)
-            } else {
-                holdingRepo.update(holding)
-            }
+        user.deposit(totalPrice.value)
+        userRepo.update(user)
 
-            user.deposit(totalPrice.value)
-            userRepo.update(user)
-
-            val order =
-                tradeOrderRepo.createOrder(
-                    user = user,
-                    stock = stock,
-                    type = OrderType.SELL,
-                    quantity = quantity,
-                )
-            return success(order)
+        val order =
+            tradeOrderRepo.createOrder(
+                user = user,
+                stock = stock,
+                type = OrderType.SELL,
+                quantity = quantity,
+            )
+        return order
     }
 }

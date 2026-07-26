@@ -3,11 +3,13 @@ package dev.freddiesilver.stocksim.middleware.resolvers
 import dev.freddiesilver.stocksim.user.auth.AuthenticatedUser
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.core.MethodParameter
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.bind.support.WebDataBinderFactory
 import org.springframework.web.context.request.NativeWebRequest
 import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.method.support.ModelAndViewContainer
+import org.springframework.web.server.ResponseStatusException
 import kotlin.jvm.java
 
 @Component
@@ -22,8 +24,8 @@ class AuthenticatedUserArgumentResolver : HandlerMethodArgumentResolver {
     ): Any? {
         val request =
             webRequest.getNativeRequest(HttpServletRequest::class.java)
-                ?: throw IllegalStateException("TODO")
-        return getUserFrom(request) ?: throw IllegalStateException("TODO")
+                ?: throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not authenticated")
+        return getUserFrom(request) ?: throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not authenticated")
     }
 
     companion object {

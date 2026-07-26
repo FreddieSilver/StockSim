@@ -17,7 +17,6 @@ import org.springframework.context.annotation.Profile
 
 @Configuration
 class RepositoryConfig {
-
     @Bean
     @Profile("mem")
     fun userRepositoryMem(): UserRepository = UserRepositoryMem()
@@ -42,33 +41,29 @@ class RepositoryConfig {
     @Profile("jpa")
     fun userRepositoryJpa(
         userJpa: UserJpaRepository,
-        tokenJpa: TokenJpaRepository
+        tokenJpa: TokenJpaRepository,
     ): UserRepository = UserRepositoryJpa(userJpa, tokenJpa)
 
     @Bean
     @Profile("jpa")
-    fun companyRepositoryJpa(
-        companyJpa: CompanyJpaRepository
-    ): CompanyRepository = CompanyRepositoryJpa(companyJpa)
+    fun companyRepositoryJpa(companyJpa: CompanyJpaRepository): CompanyRepository = CompanyRepositoryJpa(companyJpa)
 
     @Bean
     @Profile("jpa")
     fun stockRepositoryJpa(
         stockJpa: StockJpaRepository,
-        companyJpa: CompanyJpaRepository
+        companyJpa: CompanyJpaRepository,
     ): StockRepository = StockRepositoryJpa(stockJpa, companyJpa)
 
     @Bean
     @Profile("jpa")
-    fun holdingRepositoryJpa(
-        holdingJpa: HoldingJpaRepository
-    ): HoldingRepository = HoldingRepositoryJpa(holdingJpa)
+    fun holdingRepositoryJpa(holdingJpa: HoldingJpaRepository): HoldingRepository = HoldingRepositoryJpa(holdingJpa)
 
     @Bean
     @Profile("jpa")
     fun tradeOrderRepositoryJpa(
         tradeOrderJpa: TradeOrderJpaRepository,
         userJpa: UserJpaRepository,
-        stockJpa: StockJpaRepository
+        stockJpa: StockJpaRepository,
     ): TradeOrderRepository = TradeOrderRepositoryJpa(tradeOrderJpa, userJpa, stockJpa)
 }

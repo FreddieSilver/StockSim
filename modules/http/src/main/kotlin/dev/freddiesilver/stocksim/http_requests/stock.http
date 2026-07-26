@@ -1,0 +1,11 @@
+###TEST CREATE STOCK
+POST http://localhost:8080/stocks
+Content-Type: application/json
+
+{
+  "companyId": 1,
+  "initialPrice": 319.09
+}
+
+###TEST GET STOCK
+GET http://localhost:8080/stocks/1

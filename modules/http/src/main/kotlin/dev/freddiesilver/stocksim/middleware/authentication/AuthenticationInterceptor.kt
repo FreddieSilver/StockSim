@@ -5,6 +5,7 @@ import dev.freddiesilver.stocksim.middleware.resolvers.AuthenticatedUserArgument
 import dev.freddiesilver.stocksim.user.auth.AuthenticatedUser
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Component
 import org.springframework.web.method.HandlerMethod
 import org.springframework.web.servlet.HandlerInterceptor
@@ -24,7 +25,7 @@ class AuthenticationInterceptor(
                 it.parameterType == AuthenticatedUser::class.java
             }
         ) {
-            var authHeaderValue = request.getHeader(NAME_AUTHORIZATION_HEADER)
+            var authHeaderValue = request.getHeader(HttpHeaders.AUTHORIZATION)
 
             if (authHeaderValue == null && request.cookies != null) {
                 val cookie = request.cookies.find { it.name == "token" }
@@ -38,7 +39,7 @@ class AuthenticationInterceptor(
 
             return if (user == null) {
                 response.status = 401
-                response.addHeader(NAME_WWW_AUTHENTICATE_HEADER, RequestTokenProcessor.SCHEME)
+                response.addHeader(HttpHeaders.WWW_AUTHENTICATE, RequestTokenProcessor.SCHEME)
                 false
             } else {
                 AuthenticatedUserArgumentResolver.addUserTo(user, request)
@@ -47,10 +48,5 @@ class AuthenticationInterceptor(
         }
 
         return true
-    }
-
-    companion object {
-        const val NAME_AUTHORIZATION_HEADER = "Authorization"
-        private const val NAME_WWW_AUTHENTICATE_HEADER = "WWW-Authenticate"
     }
 }
