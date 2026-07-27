@@ -5,11 +5,13 @@ import dev.freddiesilver.stocksim.user.auth.token.Sha256TokenEncoder
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
+import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import java.time.Clock
 import java.time.Duration
 
 @SpringBootApplication
+@EnableScheduling
 class StockSimApplication {
     @Bean
     fun passwordEncoder() = BCryptPasswordEncoder()

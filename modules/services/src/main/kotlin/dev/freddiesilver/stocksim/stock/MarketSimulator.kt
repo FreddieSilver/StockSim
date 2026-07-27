@@ -6,10 +6,13 @@ import dev.freddiesilver.stocksim.trading.stock.Stock
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.math.RoundingMode
+import kotlin.math.sqrt
 import kotlin.random.Random
 
-const val MIN_PRICE_VALUE = 0.01
+private val MIN_PRICE_VALUE = BigDecimal("0.01")
 
+// 1800 ticks in an hour
+private const val TICK_SCALER = 1800.0
 /**
  * Simulates market price fluctuations using per-stock volatility and drift.
  *
@@ -31,21 +34,23 @@ class MarketSimulator(
         stocks.forEach { stock ->
             val volatility = stock.company.volatility
             val drift = stock.company.drift
-            stock.price =
-                Price(
-                    if (volatility == 0.0 && drift == 0.0) {
-                        stock.price.value
-                    } else {
-                        val changePercent = drift + random.nextDouble(-volatility, volatility)
-                        val multiplier = BigDecimal.ONE + changePercent.toBigDecimal()
-                        stock.price.value
-                            .multiply(multiplier)
-                            .setScale(2, RoundingMode.HALF_UP)
-                            .max(MIN_PRICE_VALUE.toBigDecimal())
-                    },
-                )
-            stockRepo.updateAllPrices(stocks)
+            if (volatility != 0.0 || drift != 0.0) {
+                val tickDrift = drift / TICK_SCALER
+                val tickVolatility = volatility / sqrt(TICK_SCALER)
+
+                val changePercent = tickDrift + random.nextDouble(-tickVolatility, tickVolatility)
+                val multiplier = BigDecimal.ONE + changePercent.toBigDecimal()
+
+                val newPrice = stock.price.value
+                    .multiply(multiplier)
+                    .setScale(2, RoundingMode.HALF_UP)
+                    .max(MIN_PRICE_VALUE)
+
+                stock.price = Price(newPrice)
+                println("Ticker: ${stock.company.ticker.value} | Drift: $tickDrift | Volatility: $tickVolatility | Actual Roll: $changePercent | Current Price: ${stock.price.value}")
+            }
         }
+        stockRepo.updateAllPrices(stocks)
         return stocks
     }
 }

@@ -20,6 +20,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
     api("org.springframework.security:spring-security-core:6.5.5")
     implementation("jakarta.transaction:jakarta.transaction-api:2.0.1")
+    implementation("org.springframework.boot:spring-boot-starter-web")
 }
 
 tasks.test {
