@@ -34,13 +34,7 @@ class HoldingRepositoryMem : HoldingRepository {
 
     override fun update(entity: Holding) {
         if (entity.id == 0L) {
-            val newHolding =
-                Holding(
-                    id = holdings.size + 1L,
-                    userId = entity.userId,
-                    stockId = entity.stockId,
-                    quantity = entity.quantity,
-                )
+            val newHolding = entity.copy(id = holdings.size + 1L)
             holdings.add(newHolding)
         } else {
             holdings.removeIf { it.id == entity.id }

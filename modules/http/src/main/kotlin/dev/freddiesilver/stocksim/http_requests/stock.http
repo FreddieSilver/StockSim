@@ -10,5 +10,11 @@ Content-Type: application/json
 ###TEST GET STOCK
 GET http://localhost:8080/stocks/1
 
+###TEST GET ALL STOCKS
+GET http://localhost:8080/stocks
+
 ### TEST STOCK PRICE STREAM
 GET http://localhost:8080/stocks/stream
+
+### TEST STOCK PRICE HISTORY
+GET http://localhost:8080/stocks/1/history

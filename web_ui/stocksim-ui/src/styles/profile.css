@@ -1,0 +1,133 @@
+
+.user-profile-container {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.user-profile-title {
+    margin: 0 0 24px;
+
+    font-size: 30px;
+    letter-spacing: -0.04em;
+}
+
+.user-profile-card {
+    padding: 28px;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+
+    box-shadow: var(--shadow-md);
+}
+
+.user-profile-header {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.user-avatar {
+    width: 64px;
+    height: 64px;
+
+    display: grid;
+    place-items: center;
+
+    color: white;
+
+    background:
+            linear-gradient(
+                    135deg,
+                    var(--accent),
+                    #6366f1
+            );
+
+    border-radius: 16px;
+
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.user-name {
+    margin: 0;
+
+    font-size: 20px;
+}
+
+.user-email {
+    margin-top: 5px;
+
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.profile-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 12px;
+
+    margin-top: 28px;
+}
+
+.profile-stat {
+    padding: 18px;
+
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+}
+
+.profile-stat-label {
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+.profile-stat-value {
+    margin-top: 7px;
+
+    color: var(--text);
+    font-size: 20px;
+    font-weight: 700;
+}
+
+/* =========================================================
+   STATES
+   ========================================================= */
+
+.user-profile-loading,
+.user-profile-error,
+.user-profile-no-user {
+    padding: 60px 20px;
+
+    color: var(--text-secondary);
+    text-align: center;
+}
+
+.user-profile-error {
+    color: #fca5a5;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 900px) {
+    .navbar-container {
+        padding: 0 20px;
+    }
+
+    .stock-row {
+        grid-template-columns:
+      minmax(160px, 2fr)
+      1fr
+      1fr;
+    }
+
+    .stock-row > :nth-child(4),
+    .stock-row > :nth-child(5) {
+        display: none;
+    }
+}

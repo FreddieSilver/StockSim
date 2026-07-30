@@ -28,6 +28,7 @@ class SseService {
         val data = stocks.map { stock ->
             mapOf(
                 "stock_id" to stock.id,
+                "ticker" to stock.company.ticker.value,
                 "price" to stock.price.value
             )
         }

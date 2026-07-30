@@ -46,3 +46,12 @@ CREATE TABLE trade_orders (
                               price_at_order DECIMAL(19, 4) NOT NULL,
                               status VARCHAR(20) NOT NULL
 );
+
+CREATE TABLE price_history (
+                               id BIGSERIAL PRIMARY KEY,
+                               stock_id BIGINT NOT NULL REFERENCES stocks(id) ON DELETE CASCADE,
+                               price DECIMAL(19, 4) NOT NULL,
+                               timestamp TIMESTAMP WITH TIME ZONE NOT NULL
+);
+
+CREATE INDEX idx_price_history_stock_time ON price_history(stock_id, timestamp DESC);

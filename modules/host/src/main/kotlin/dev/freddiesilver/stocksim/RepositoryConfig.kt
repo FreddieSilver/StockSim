@@ -4,6 +4,8 @@ import dev.freddiesilver.stocksim.repositories.company.CompanyJpaRepository
 import dev.freddiesilver.stocksim.repositories.company.CompanyRepositoryJpa
 import dev.freddiesilver.stocksim.repositories.holding.HoldingJpaRepository
 import dev.freddiesilver.stocksim.repositories.holding.HoldingRepositoryJpa
+import dev.freddiesilver.stocksim.repositories.pricepoint.PricePointJpaRepository
+import dev.freddiesilver.stocksim.repositories.pricepoint.PricePointRepositoryJpa
 import dev.freddiesilver.stocksim.repositories.stock.StockJpaRepository
 import dev.freddiesilver.stocksim.repositories.stock.StockRepositoryJpa
 import dev.freddiesilver.stocksim.repositories.tradeorder.TradeOrderJpaRepository
@@ -28,6 +30,10 @@ class RepositoryConfig {
     @Bean
     @Profile("mem")
     fun stockRepositoryMem(): StockRepository = StockRepositoryMem()
+
+    @Bean
+    @Profile("mem")
+    fun pricePointRepositoryMem(): PricePointRepository = PricePointRepositoryMem()
 
     @Bean
     @Profile("mem")
@@ -57,6 +63,12 @@ class RepositoryConfig {
 
     @Bean
     @Profile("jpa")
+    fun pricePointRepositoryJpa(
+        pricePointJpa: PricePointJpaRepository,
+    ): PricePointRepository = PricePointRepositoryJpa(pricePointJpa)
+
+    @Bean
+    @Profile("jpa")
     fun holdingRepositoryJpa(holdingJpa: HoldingJpaRepository): HoldingRepository = HoldingRepositoryJpa(holdingJpa)
 
     @Bean
@@ -67,3 +79,4 @@ class RepositoryConfig {
         stockJpa: StockJpaRepository,
     ): TradeOrderRepository = TradeOrderRepositoryJpa(tradeOrderJpa, userJpa, stockJpa)
 }
+

@@ -50,7 +50,7 @@ class UserController(
         return ResponseEntity.ok(
             UserHomeResponseDto(
                 id = result.id,
-                name = result.username.value,
+                username = result.username.value,
                 email = result.email.value,
                 balance = result.balance.value.toDouble(),
             ),
