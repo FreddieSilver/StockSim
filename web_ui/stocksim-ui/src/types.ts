@@ -68,5 +68,19 @@ export interface TradeOrderInput {
     quantity: number;
 }
 
+export interface Holding {
+    user: User;
+    stock: StockDetail;
+    quantity: number;
+}
+
+export interface Order {
+    stock: StockDetail;
+    type: "BUY" | "SELL";
+    quantity: number;
+    priceValueAtOrder: number;
+    status: string;
+}
+
 
 

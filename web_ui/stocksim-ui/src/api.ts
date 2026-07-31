@@ -3,7 +3,7 @@ import type {
     UserLoginInput,
     TokenOutput,
     UserAuth,
-    PricePoint, TradeOrderInput, StockDetail
+    PricePoint, TradeOrderInput, StockDetail, Holding, Order
 } from "./types";
 //import { getErrorDescription } from "./errorDescriptions";
 
@@ -111,6 +111,14 @@ export const api = {
             method: "GET",
         });
     },
+
+    async getMyHoldings(): Promise<Holding[]> {
+        return fetchApi<Holding[]>("/me/holdings", { method: "GET" });
+    },
+
+    async getMyOrders(): Promise<Order[]> {
+        return fetchApi<Order[]>("/me/orders", { method: "GET" });
+    }
 };
 
 export { ApiError };

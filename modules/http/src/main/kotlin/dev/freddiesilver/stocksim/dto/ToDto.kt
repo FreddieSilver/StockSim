@@ -2,10 +2,12 @@ package dev.freddiesilver.stocksim.dto
 
 import dev.freddiesilver.stocksim.company.Company
 import dev.freddiesilver.stocksim.dto.company.CompanyDto
+import dev.freddiesilver.stocksim.dto.holding.HoldingDto
 import dev.freddiesilver.stocksim.dto.stock.PricePointDto
 import dev.freddiesilver.stocksim.dto.stock.StockDto
 import dev.freddiesilver.stocksim.dto.tradeorder.TradeOrderDto
 import dev.freddiesilver.stocksim.dto.user.output.UserDto
+import dev.freddiesilver.stocksim.trading.holding.Holding
 import dev.freddiesilver.stocksim.trading.stock.PricePoint
 import dev.freddiesilver.stocksim.trading.stock.Stock
 import dev.freddiesilver.stocksim.trading.tradeorder.TradeOrder
@@ -57,3 +59,9 @@ fun PricePoint.toDto(): PricePointDto =
         price = price.value.toDouble()
     )
 
+fun Holding.toDto(): HoldingDto =
+    HoldingDto(
+        user = user.toDto(),
+        stock = stock.toDto(),
+        quantity = quantity.toDouble()
+    )

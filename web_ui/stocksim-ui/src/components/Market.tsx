@@ -236,7 +236,7 @@ function ExpandedStockView({ stock, user, quantity, tradeLoading, setQuantity, h
             <div className="stock-chart-container">
                 <ResponsiveContainer width="100%" height={300}>
                     <LineChart data={stock.history}>
-                        <XAxis dataKey="time" stroke="#64748b" fontSize={12} tickMargin={10} minTickGap={20} />
+                        <XAxis dataKey="timestamp" stroke="#64748b" fontSize={12} tickMargin={10} minTickGap={20} />
                         <YAxis domain={['auto', 'auto']} stroke="#64748b" fontSize={12} tickFormatter={(val) => `$${val}`} width={60} />
                         <Tooltip
                             contentStyle={{ backgroundColor: '#10151e', borderColor: '#303b4c', borderRadius: '8px' }}
@@ -247,7 +247,7 @@ function ExpandedStockView({ stock, user, quantity, tradeLoading, setQuantity, h
 
                         {/* ZOOM SLIDER: State is controlled so it doesn't reset on stream update */}
                         <Brush
-                            dataKey="time"
+                            dataKey="timestamp"
                             height={30}
                             stroke="#8b5cf6"
                             fill="#10151e"

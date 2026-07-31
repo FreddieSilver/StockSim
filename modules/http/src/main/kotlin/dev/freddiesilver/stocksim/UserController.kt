@@ -8,6 +8,7 @@ import dev.freddiesilver.stocksim.dto.user.output.DepositResponseDto
 import dev.freddiesilver.stocksim.dto.user.output.UserDto
 import dev.freddiesilver.stocksim.dto.user.output.TokenDto
 import dev.freddiesilver.stocksim.helpers.dataResponse
+import dev.freddiesilver.stocksim.tradeorder.TradeOrderService
 import dev.freddiesilver.stocksim.user.AuthService
 import dev.freddiesilver.stocksim.user.UserService
 import dev.freddiesilver.stocksim.user.auth.AuthenticatedUser
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController
 class UserController(
     private val authService: AuthService,
     private val userService: UserService,
+    private val tradeOrderService: TradeOrderService
 ) {
     @PostMapping("/users")
     fun createUser(
@@ -72,4 +74,19 @@ class UserController(
         )
     }
 
+    @GetMapping("/me/orders")
+    fun getTradeOrders(
+        user: AuthenticatedUser
+    ): ResponseEntity<*> {
+        val tradeOrders = tradeOrderService.getTradeOrdersForUser(user.user.id)
+        return dataResponse(HttpStatus.OK,tradeOrders.map { it.toDto() })
+    }
+
+    @GetMapping("/me/holdings")
+    fun getHoldings(
+        user: AuthenticatedUser
+    ): ResponseEntity<*> {
+        val tradeOrders = tradeOrderService.getHoldingsForUser(user.user.id)
+        return dataResponse(HttpStatus.OK, tradeOrders.map { it.toDto() }.reversed())
+    }
 }

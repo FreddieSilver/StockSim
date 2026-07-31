@@ -8,3 +8,8 @@ Authorization: bearer 6K0NWWlHfHpdfmAchE5a2FkFAhXdXZvZt5B_5m43nhM
   "type": "SELL",
   "quantity": 1.45
 }
+
+### TEST GET TRADE ORDER
+GET http://localhost:8080/trade-orders
+Content-Type: application/json
+Authorization: bearer HM6qAwnOlqsj2KeYMneiOzAPQbaEYVeTo-_6-RMBCBs

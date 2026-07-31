@@ -9,7 +9,6 @@ import dev.freddiesilver.stocksim.trading.tradeorder.OrderType
 import dev.freddiesilver.stocksim.user.auth.AuthenticatedUser
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
@@ -24,7 +23,9 @@ class TradeOrderController(
         user: AuthenticatedUser,
         @RequestBody input: TradeOrderRequestDto
     ): ResponseEntity<*> {
-        val type = try { OrderType.valueOf(input.type.uppercase()) } catch (_: IllegalArgumentException) {
+        val type = try {
+            OrderType.valueOf(input.type.uppercase())
+        } catch (_: IllegalArgumentException) {
             return errorResponse("Invalid order type: ${input.type}", HttpStatus.BAD_REQUEST)
         }
         val stock = stockService.getStockById(input.stockId)
@@ -40,13 +41,5 @@ class TradeOrderController(
         )
 
         return messageResponse("Order placed successfully", HttpStatus.OK)
-    }
-
-    @GetMapping("/trade-orders")
-    fun getTradeOrders(
-        user: AuthenticatedUser
-    ): ResponseEntity<*> {
-        val tradeOrders = tradeOrderService.getTradeOrdersForUser(user.user.id)
-        return ResponseEntity.ok(tradeOrders)
     }
 }
