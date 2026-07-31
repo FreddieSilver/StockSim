@@ -9,7 +9,7 @@ data class TradeOrder(
     val user: User,
     val stock: Stock,
     val type: OrderType,
-    val quantity: Int,
+    val quantity: BigDecimal,
     val priceValueAtOrder: BigDecimal,
     var status: OrderStatus,
 )

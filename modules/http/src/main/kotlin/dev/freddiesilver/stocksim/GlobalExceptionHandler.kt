@@ -1,6 +1,6 @@
 package dev.freddiesilver.stocksim
 
-import dev.freddiesilver.stocksim.dto.output.ApiErrorResponse
+import dev.freddiesilver.stocksim.dto.ApiErrorResponse
 import dev.freddiesilver.stocksim.stock.error.StockError
 import dev.freddiesilver.stocksim.tradeorder.error.TradeOrderError
 import dev.freddiesilver.stocksim.user.error.AuthError

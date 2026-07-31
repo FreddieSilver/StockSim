@@ -2,8 +2,7 @@ package dev.freddiesilver.stocksim.repositories.user
 
 import dev.freddiesilver.stocksim.UserRepository
 import dev.freddiesilver.stocksim.entities.UserEntity
-import dev.freddiesilver.stocksim.mappers.TokenMapper
-import dev.freddiesilver.stocksim.mappers.UserMapper
+import dev.freddiesilver.stocksim.entities.toJpaEntity
 import dev.freddiesilver.stocksim.user.Email
 import dev.freddiesilver.stocksim.user.PasswordValidationInfo
 import dev.freddiesilver.stocksim.user.User
@@ -31,17 +30,17 @@ class UserRepositoryJpa(
                 passwordValidationInfo = password.validationInfo,
                 balance = BigDecimal.ZERO,
             )
-        return UserMapper.toDomain(jpa.save(entity))
+        return entity.toDomain()
     }
 
-    override fun findByEmail(email: String): User? = jpa.findByEmail(email)?.let { UserMapper.toDomain(it) }
+    override fun findByEmail(email: String): User? = jpa.findByEmail(email)?.toDomain()
 
-    override fun findById(id: Long): User? = jpa.findById(id).orElse(null)?.let { UserMapper.toDomain(it) }
+    override fun findById(id: Long): User? = jpa.findById(id).orElse(null)?.toDomain()
 
-    override fun findAll(): List<User> = jpa.findAll().map { UserMapper.toDomain(it) }
+    override fun findAll(): List<User> = jpa.findAll().map { it.toDomain() }
 
     override fun update(entity: User) {
-        jpa.save(UserMapper.toEntity(entity))
+        jpa.save(entity.toJpaEntity())
     }
 
     override fun deleteById(id: Long) = jpa.deleteById(id)
@@ -67,7 +66,7 @@ class UserRepositoryJpa(
             }
         }
 
-        return TokenMapper.toDomain(tokenJpa.save(TokenMapper.toEntity(token)))
+        return tokenJpa.save(token.toJpaEntity()).toDomain()
     }
 
     override fun getTokenByTokenValidationInfo(tokenValidationInfo: TokenValidationInfo): Pair<User, Token>? {
@@ -77,7 +76,7 @@ class UserRepositoryJpa(
         val userEntity =
             jpa.findById(tokenEntity.userId).orElse(null)
                 ?: return null
-        return UserMapper.toDomain(userEntity) to TokenMapper.toDomain(tokenEntity)
+        return userEntity.toDomain() to tokenEntity.toDomain()
     }
 
     override fun updateTokenLastUsed(

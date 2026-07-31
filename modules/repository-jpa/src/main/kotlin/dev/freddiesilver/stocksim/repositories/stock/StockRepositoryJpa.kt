@@ -3,7 +3,6 @@ package dev.freddiesilver.stocksim.repositories.stock
 import dev.freddiesilver.stocksim.StockRepository
 import dev.freddiesilver.stocksim.company.Company
 import dev.freddiesilver.stocksim.entities.StockEntity
-import dev.freddiesilver.stocksim.mappers.StockMapper
 import dev.freddiesilver.stocksim.repositories.company.CompanyJpaRepository
 import dev.freddiesilver.stocksim.trading.stock.Stock
 import java.math.BigDecimal
@@ -27,7 +26,7 @@ class StockRepositoryJpa(
                     price = initialPrice,
                 ),
             )
-        return StockMapper.toDomain(entity)
+        return entity.toDomain()
     }
 
     override fun updateAllPrices(stocks: List<Stock>) {
@@ -53,9 +52,9 @@ class StockRepositoryJpa(
         jpa.save(entity)
     }
 
-    override fun findById(id: Long): Stock? = jpa.findById(id).orElse(null)?.let { StockMapper.toDomain(it) }
+    override fun findById(id: Long): Stock? = jpa.findById(id).orElse(null)?.toDomain()
 
-    override fun findAll(): List<Stock> = jpa.findAll().map { StockMapper.toDomain(it) }
+    override fun findAll(): List<Stock> = jpa.findAll().map { it.toDomain() }
 
     override fun update(entity: Stock) {
         val existing =

@@ -7,13 +7,16 @@ import type {User} from "../types.ts";
 type State = {
   user: User | null;
   loading: boolean;
+  isDepositing: boolean;
   error: string | null;
 };
 
 type Action =
   | { type: "fetching" }
   | { type: "fetch-success"; user: User }
-  | { type: "fetch-error"; message: string };
+  | { type: "fetch-error"; message: string }
+  | { type: "depositing" }
+  | { type: "deposit-success" };
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
@@ -23,6 +26,10 @@ function reducer(state: State, action: Action): State {
       return { ...state, user: action.user, loading: false, error: null };
     case "fetch-error":
       return { ...state, loading: false, error: action.message };
+    case "depositing":
+      return { ...state, isDepositing: true };
+    case "deposit-success":
+      return { ...state, isDepositing: false };
     default:
       return state;
   }
@@ -30,12 +37,13 @@ function reducer(state: State, action: Action): State {
 
 const initialState: State = {
   user: null,
+  isDepositing: false,
   loading: true,
   error: null,
 };
 
 export function UserProfile() {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
@@ -52,6 +60,22 @@ export function UserProfile() {
 
     fetchProfile();
   }, []);
+
+  const handleDeposit = async () => {
+    dispatch({ type: "depositing" });
+    try {
+      await api.deposit(20);
+      await refreshUser(); // Instantly update navbar balance
+
+      // Update local page state
+      const updatedData = await api.getMe();
+      dispatch({ type: "fetch-success", user: updatedData as User });
+    } catch (err) {
+      alert("Failed to deposit money.");
+    } finally {
+      dispatch({ type: "deposit-success" });
+    }
+  };
 
   if (state.loading) {
     return <div className="user-profile-loading">Loading profile…</div>;
@@ -108,6 +132,14 @@ export function UserProfile() {
               <div className="profile-stat-value">
                 ${user.balance.toFixed(2)}
               </div>
+              <button
+                  onClick={handleDeposit}
+                  disabled={state.isDepositing}
+                  className="btn-primary"
+                  style={{ marginTop: '12px', width: '100%', minHeight: '32px' }}
+              >
+                {state.isDepositing ? "Adding..." : "+ Add $20"}
+              </button>
             </div>
 
             <div className="profile-stat">

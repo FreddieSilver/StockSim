@@ -1,0 +1,75 @@
+.stock-page-layout {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+}
+
+.stock-page-main {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.stock-page-sidebar {
+    flex: 1;
+    position: sticky;
+    top: 90px; /* Sticks to the top as you scroll the left side */
+}
+
+.company-details-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 30px;
+}
+
+.company-details-card h2 {
+    margin: 0 0 15px 0;
+    font-size: 20px;
+}
+
+.company-description {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+.company-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+}
+
+.company-stat-box {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    padding: 15px;
+    border-radius: var(--radius-md);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.company-stat-box .stat-label {
+    color: var(--text-muted);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.company-stat-box .stat-value {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+@media (max-width: 900px) {
+    .stock-page-layout {
+        flex-direction: column;
+    }
+    .stock-page-sidebar {
+        position: static;
+        width: 100%;
+    }
+}

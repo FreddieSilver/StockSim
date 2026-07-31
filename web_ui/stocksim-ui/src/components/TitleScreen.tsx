@@ -14,22 +14,22 @@ export default function TitleScreen() {
                 </div>
 
                 <h1>
-                    Trade the market.
+                    Trade stocks.
                     <br />
                     <span className="hero-gradient-text">
-            Risk nothing.
+            Just for fun.
           </span>
                 </h1>
 
                 <p>
-                    StockSim is a real-time stock market simulator where
+                    Fuck real trading, StockSim is a real-time stock market simulator game where
                     you can track live price movements, build your portfolio,
-                    and experience the market without risking real money.
+                    and experience a fictional stock market without risking real money.
                 </p>
 
                 <div className="hero-actions">
                     <Link to="/market" className="btn-primary">
-                        Explore Markets →
+                        Explore Stocks →
                     </Link>
 
                     {!user && (
@@ -58,7 +58,7 @@ export default function TitleScreen() {
                         Trading
                     </div>
                     <div className="hero-stat-value">
-                        Zero risk
+                        No risk
                     </div>
                 </div>
 
@@ -67,7 +67,7 @@ export default function TitleScreen() {
                         Experience
                     </div>
                     <div className="hero-stat-value">
-                        Build your portfolio
+                        Be a Baller
                     </div>
                 </div>
             </div>

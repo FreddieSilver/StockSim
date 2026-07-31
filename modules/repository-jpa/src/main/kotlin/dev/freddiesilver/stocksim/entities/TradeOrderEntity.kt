@@ -2,6 +2,7 @@ package dev.freddiesilver.stocksim.entities
 
 import dev.freddiesilver.stocksim.trading.tradeorder.OrderStatus
 import dev.freddiesilver.stocksim.trading.tradeorder.OrderType
+import dev.freddiesilver.stocksim.trading.tradeorder.TradeOrder
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
@@ -31,11 +32,21 @@ class TradeOrderEntity(
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     val type: OrderType,
-    @Column(nullable = false)
-    val quantity: Int,
+    @Column(nullable = false, precision = 19, scale = 4)
+    val quantity: BigDecimal,
     @Column(nullable = false, precision = 19, scale = 4)
     val priceAtOrder: BigDecimal,
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     var status: OrderStatus,
-)
+){
+    fun toDomain() = TradeOrder(
+        id = id,
+        user = user.toDomain(),
+        stock = stock.toDomain(),
+        type = type,
+        quantity = quantity,
+        priceValueAtOrder = priceAtOrder,
+        status = status
+    )
+}

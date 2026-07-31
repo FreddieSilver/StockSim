@@ -1,22 +1,26 @@
 package dev.freddiesilver.stocksim.trading.holding
 
+import dev.freddiesilver.stocksim.trading.stock.Stock
+import dev.freddiesilver.stocksim.user.User
+import java.math.BigDecimal
+
 data class Holding(
     val id: Long = 0,
-    val userId: Long,
-    val stockId: Long,
-    var quantity: Int,
+    val user: User,
+    val stock: Stock,
+    var quantity: BigDecimal,
 ) {
     init {
-        require(quantity >= 0) { "Portfolio quantity cannot be negative" }
+        require(quantity >= BigDecimal.ZERO) { "Portfolio quantity cannot be negative" }
     }
 
-    fun addQuantity(amount: Int) {
-        require(amount > 0) { "Amount to add must be positive" }
+    fun addQuantity(amount: BigDecimal) {
+        require(amount > BigDecimal.ZERO) { "Amount to add must be positive" }
         this.quantity += amount
     }
 
-    fun removeQuantity(amount: Int) {
-        require(amount > 0) { "Amount to remove must be positive" }
+    fun removeQuantity(amount: BigDecimal) {
+        require(amount > BigDecimal.ZERO) { "Amount to remove must be positive" }
         require(this.quantity >= amount) { "Cannot remove more than owned" }
         this.quantity -= amount
     }

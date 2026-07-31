@@ -10,5 +10,17 @@ Content-Type: application/json
   "drift":  0.125
 }
 
+###TEST CREATE COMPANY
+POST http://localhost:8080/companies
+Content-Type: application/json
+
+{
+  "name" : "KLOUD Inc.",
+  "ticker": "KLOUD",
+  "description": "A empresa do karun esse chato.",
+  "volatility": 0.45,
+  "drift":  0.250
+}
+
 ###TEST GET COMPANY
 GET http://localhost:8080/companies/1

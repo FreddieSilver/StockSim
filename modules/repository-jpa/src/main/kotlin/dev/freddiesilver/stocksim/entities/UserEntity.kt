@@ -1,5 +1,10 @@
 package dev.freddiesilver.stocksim.entities
 
+import dev.freddiesilver.stocksim.user.Balance
+import dev.freddiesilver.stocksim.user.Email
+import dev.freddiesilver.stocksim.user.PasswordValidationInfo
+import dev.freddiesilver.stocksim.user.User
+import dev.freddiesilver.stocksim.user.Username
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
@@ -22,4 +27,14 @@ class UserEntity(
     val passwordValidationInfo: String,
     @Column(nullable = false, precision = 19, scale = 4)
     var balance: BigDecimal,
-)
+){
+    fun toDomain(): User {
+        return User(
+            id = id,
+            username = Username(username),
+            email = Email(email),
+            passwordValidationInfo = PasswordValidationInfo(passwordValidationInfo),
+            balance = Balance(balance),
+            )
+    }
+}

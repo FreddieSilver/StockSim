@@ -3,8 +3,8 @@ POST http://localhost:8080/stocks
 Content-Type: application/json
 
 {
-  "companyId": 1,
-  "initialPrice": 319.09
+  "companyId": 2,
+  "initialPrice": 50.0
 }
 
 ###TEST GET STOCK

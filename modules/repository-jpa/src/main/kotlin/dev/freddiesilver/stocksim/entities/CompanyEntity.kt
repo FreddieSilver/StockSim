@@ -1,5 +1,9 @@
 package dev.freddiesilver.stocksim.entities
 
+import dev.freddiesilver.stocksim.company.Company
+import dev.freddiesilver.stocksim.company.CompanyName
+import dev.freddiesilver.stocksim.company.Description
+import dev.freddiesilver.stocksim.company.Ticker
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
@@ -23,4 +27,15 @@ class CompanyEntity(
     val volatility: Double,
     @Column(nullable = false)
     val baseDrift: Double,
-)
+){
+    fun toDomain(): Company {
+        return Company(
+            id = id,
+            name = CompanyName(name),
+            ticker = Ticker(ticker),
+            description = Description(description),
+            volatility = volatility,
+            drift = baseDrift,
+        )
+    }
+}

@@ -9,8 +9,7 @@ import {Register} from "./components/Register.tsx";
 import {UserProfile} from "./components/UserProfile.tsx";
 import {ProtectedRoute} from "./components/ProtectedRoute.tsx";
 import {Market} from "./components/Market.tsx";
-
-
+import {StockScreen} from "./components/StockScreen.tsx";
 
 const router = createBrowserRouter([
     {
@@ -21,6 +20,7 @@ const router = createBrowserRouter([
             { path: "login", element: <Login /> },
             { path: "register", element: <Register /> },
             { path: "market", element: <Market /> },
+            { path: "stock/:id", element: <StockScreen /> },
             {
                 path: "me",
                 element: (

@@ -1,5 +1,7 @@
 package dev.freddiesilver.stocksim.entities
 
+import dev.freddiesilver.stocksim.trading.stock.Price
+import dev.freddiesilver.stocksim.trading.stock.PricePoint
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
@@ -21,4 +23,13 @@ class PricePointEntity(
     val price: BigDecimal,
     @Column(nullable = false)
     val timestamp: Instant
-)
+){
+    fun toDomain(): PricePoint {
+        return PricePoint(
+            id = id,
+            stockId = stockId,
+            price = Price(price),
+            timestamp = timestamp,
+            )
+    }
+}

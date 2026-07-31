@@ -4,7 +4,7 @@ POST http://localhost:8080/users/login
 Content-Type: application/json
 
 {
-  "email": "condeco@kotlin.com",
+  "email": "condeco@email.com",
   "password": "kotlinzaoze"
 }
 
@@ -27,7 +27,16 @@ POST http://localhost:8080/users
 Content-Type: application/json
 
 {
-  "username": "kingOfTheLimbs",
-  "email": "kingy@kotlin.com",
-  "password": "limBzz23gfff"
+  "username": "condeco",
+  "email": "condeco@email.com",
+  "password": "kotlinZaoze1"
+}
+
+###TEST DEPOSIT
+POST http://localhost:8080/me/deposit
+Content-Type: application/json
+Authorization: bearer 6K0NWWlHfHpdfmAchE5a2FkFAhXdXZvZt5B_5m43nhM
+
+{
+  "amount": 20.0
 }

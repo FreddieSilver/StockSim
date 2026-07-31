@@ -1,5 +1,6 @@
 package dev.freddiesilver.stocksim.entities
 
+import dev.freddiesilver.stocksim.trading.stock.Stock
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -22,4 +23,12 @@ class StockEntity(
     val company: CompanyEntity,
     @Column(nullable = false, precision = 19, scale = 4)
     var price: BigDecimal,
-)
+){
+    fun toDomain(): Stock {
+        return Stock(
+            id = id,
+            company = company.toDomain(),
+            price = dev.freddiesilver.stocksim.trading.stock.Price(price),
+        )
+    }
+}

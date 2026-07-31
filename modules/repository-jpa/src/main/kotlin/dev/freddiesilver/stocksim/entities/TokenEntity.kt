@@ -1,5 +1,7 @@
 package dev.freddiesilver.stocksim.entities
 
+import dev.freddiesilver.stocksim.user.auth.token.Token
+import dev.freddiesilver.stocksim.user.auth.token.TokenValidationInfo
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
@@ -22,4 +24,12 @@ class TokenEntity(
     val createdAt: Instant,
     @Column(name = "last_used_at", nullable = false)
     var lastUsedAt: Instant,
-)
+){
+    fun toDomain(): Token =
+        Token(
+            tokenValidationInfo = TokenValidationInfo(tokenValidationInfo),
+            userId = userId,
+            createdAt = createdAt,
+            lastUsedAt = lastUsedAt
+        )
+}

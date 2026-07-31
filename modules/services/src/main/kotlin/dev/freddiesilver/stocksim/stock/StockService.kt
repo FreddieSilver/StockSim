@@ -41,7 +41,7 @@ class StockService(
         return updatedStock
     }
 
-    fun getStockHistory(id:Long, limit:Int = 60):List<PricePoint>{
+    fun getStockHistory(id:Long, limit:Int):List<PricePoint>{
         stockRepo.findById(id) ?: throw StockError.StockNotFound()
         return pricePointRepo.findRecentByStockId(id, limit)
     }

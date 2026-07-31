@@ -1,30 +1,37 @@
 package dev.freddiesilver.stocksim
 
-import dev.freddiesilver.stocksim.trading.stock.Stock
 import dev.freddiesilver.stocksim.trading.tradeorder.OrderStatus
 import dev.freddiesilver.stocksim.trading.tradeorder.OrderType
 import dev.freddiesilver.stocksim.trading.tradeorder.TradeOrder
-import dev.freddiesilver.stocksim.user.User
+import java.math.BigDecimal
 
-class TradeOrderRepositoryMem : TradeOrderRepository {
+class TradeOrderRepositoryMem(
+    private val userRepo: UserRepository,
+    private val stockRepo: StockRepository
+) : TradeOrderRepository {
     private val orders = mutableListOf<TradeOrder>()
     private var nextId = 1L
 
     override fun createOrder(
-        user: User,
-        stock: Stock,
+        userId: Long,
+        stockId: Long,
         type: OrderType,
-        quantity: Int,
-    ): TradeOrder =
-        TradeOrder(
+        quantity: BigDecimal,
+    ): TradeOrder {
+        val user = userRepo.findById(userId)
+            ?: throw IllegalArgumentException("User not found with ID: $userId")
+        val stock = stockRepo.findById(stockId)
+            ?: throw IllegalArgumentException("Stock not found with ID: $stockId")
+        return TradeOrder(
             id = nextId++,
             user = user,
             stock = stock,
             type = type,
             quantity = quantity,
             priceValueAtOrder = stock.price.value,
-            status = OrderStatus.PENDING,
+            status = OrderStatus.COMPLETED,
         ).also { orders.add(it) }
+    }
 
     override fun findByUserId(userId: Long): List<TradeOrder> = orders.filter { it.user.id == userId }
 

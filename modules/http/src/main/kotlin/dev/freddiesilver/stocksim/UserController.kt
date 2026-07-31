@@ -1,9 +1,13 @@
 package dev.freddiesilver.stocksim
 
+import dev.freddiesilver.stocksim.dto.toDto
+import dev.freddiesilver.stocksim.dto.user.input.DepositDto
 import dev.freddiesilver.stocksim.dto.user.input.UserCreateDto
 import dev.freddiesilver.stocksim.dto.user.input.UserLoginDto
-import dev.freddiesilver.stocksim.dto.user.output.UserHomeResponseDto
-import dev.freddiesilver.stocksim.dto.user.output.UserLoginResponseDto
+import dev.freddiesilver.stocksim.dto.user.output.DepositResponseDto
+import dev.freddiesilver.stocksim.dto.user.output.UserDto
+import dev.freddiesilver.stocksim.dto.user.output.TokenDto
+import dev.freddiesilver.stocksim.helpers.dataResponse
 import dev.freddiesilver.stocksim.user.AuthService
 import dev.freddiesilver.stocksim.user.UserService
 import dev.freddiesilver.stocksim.user.auth.AuthenticatedUser
@@ -22,38 +26,50 @@ class UserController(
     @PostMapping("/users")
     fun createUser(
         @RequestBody input: UserCreateDto,
-    ): ResponseEntity<UserLoginResponseDto> {
+    ): ResponseEntity<*> {
         val result = authService.registerUser(input.username, input.email, input.password)
-        return ResponseEntity.status(HttpStatus.CREATED).body(UserLoginResponseDto(result.token))
+        return dataResponse(
+            status = HttpStatus.CREATED,
+            data = TokenDto(result.token)
+        )
     }
 
     @PostMapping("/users/login")
     fun login(
         @RequestBody input: UserLoginDto,
-    ): ResponseEntity<UserLoginResponseDto> {
+    ): ResponseEntity<*> {
         val result = authService.login(input.email, input.password)
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .header("Authorization", "Bearer ${result.token}")
-            .body(UserLoginResponseDto(result.token))
+        return dataResponse(
+            status = HttpStatus.OK,
+            token = result.token,
+            data = TokenDto(result.token)
+        )
     }
 
     @PostMapping("/users/logout")
-    fun logout(user: AuthenticatedUser): ResponseEntity<Unit> {
+    fun logout(user: AuthenticatedUser): ResponseEntity<*> {
         authService.revokeToken(user.token)
-        return ResponseEntity.noContent().build()
+        return dataResponse<Unit>(
+            status = HttpStatus.NO_CONTENT,
+        )
     }
 
     @GetMapping("/me")
-    fun userHome(user: AuthenticatedUser): ResponseEntity<UserHomeResponseDto> {
+    fun userHome(user: AuthenticatedUser): ResponseEntity<UserDto> {
         val result = userService.getUserById(user.user.id)
-        return ResponseEntity.ok(
-            UserHomeResponseDto(
-                id = result.id,
-                username = result.username.value,
-                email = result.email.value,
-                balance = result.balance.value.toDouble(),
-            ),
+        return dataResponse(
+            status = HttpStatus.OK,
+            data = result.toDto()
         )
     }
+
+    @PostMapping("/me/deposit")
+    fun deposit(user: AuthenticatedUser, @RequestBody input: DepositDto): ResponseEntity<*> {
+        val result = userService.deposit(user.user.id, input.amount)
+        return dataResponse(
+            status = HttpStatus.OK,
+            data = DepositResponseDto(result.balance.value.toDouble())
+        )
+    }
+
 }

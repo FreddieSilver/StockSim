@@ -1,14 +1,13 @@
 package dev.freddiesilver.stocksim.repositories.tradeorder
 
 import dev.freddiesilver.stocksim.TradeOrderRepository
-import dev.freddiesilver.stocksim.mappers.TradeOrderMapper
+import dev.freddiesilver.stocksim.entities.TradeOrderEntity
 import dev.freddiesilver.stocksim.repositories.stock.StockJpaRepository
 import dev.freddiesilver.stocksim.repositories.user.UserJpaRepository
-import dev.freddiesilver.stocksim.trading.stock.Stock
 import dev.freddiesilver.stocksim.trading.tradeorder.OrderStatus
 import dev.freddiesilver.stocksim.trading.tradeorder.OrderType
 import dev.freddiesilver.stocksim.trading.tradeorder.TradeOrder
-import dev.freddiesilver.stocksim.user.User
+import java.math.BigDecimal
 
 class TradeOrderRepositoryJpa(
     private val jpa: TradeOrderJpaRepository,
@@ -16,39 +15,34 @@ class TradeOrderRepositoryJpa(
     private val stockJpaRepository: StockJpaRepository,
 ) : TradeOrderRepository {
     override fun createOrder(
-        user: User,
-        stock: Stock,
+        userId: Long,
+        stockId: Long,
         type: OrderType,
-        quantity: Int,
+        quantity: BigDecimal,
     ): TradeOrder {
-        userJpaRepository.findById(user.id).orElseThrow {
-            IllegalArgumentException("User with id ${user.id} not found")
-        }
-        stockJpaRepository.findById(stock.id).orElseThrow {
-            IllegalArgumentException("Stock with id ${stock.id} not found")
-        }
-        val domainOrder =
-            TradeOrder(
-                user = user,
-                stock = stock,
+        val userProxy = userJpaRepository.getReferenceById(userId)
+        val stockProxy = stockJpaRepository.getReferenceById(stockId)
+        val tradeOrder =
+            TradeOrderEntity(
+                user = userProxy,
+                stock = stockProxy,
                 type = type,
                 quantity = quantity,
-                priceValueAtOrder = stock.price.value,
-                status = OrderStatus.PENDING,
+                priceAtOrder = stockProxy.price,
+                status = OrderStatus.COMPLETED,
             )
-        val entity = TradeOrderMapper.toEntity(domainOrder)
-        return TradeOrderMapper.toDomain(jpa.save(entity))
+        return jpa.save(tradeOrder).toDomain()
     }
 
-    override fun findByUserId(userId: Long): List<TradeOrder> = jpa.findByUserId(userId).map { TradeOrderMapper.toDomain(it) }
+    override fun findByUserId(userId: Long): List<TradeOrder> = jpa.findByUserId(userId).map { it.toDomain() }
 
-    override fun findByStockId(stockId: Long): List<TradeOrder> = jpa.findByStockId(stockId).map { TradeOrderMapper.toDomain(it) }
+    override fun findByStockId(stockId: Long): List<TradeOrder> = jpa.findByStockId(stockId).map { it.toDomain() }
 
-    override fun findByStatus(status: OrderStatus): List<TradeOrder> = jpa.findByStatus(status).map { TradeOrderMapper.toDomain(it) }
+    override fun findByStatus(status: OrderStatus): List<TradeOrder> = jpa.findByStatus(status).map { it.toDomain() }
 
-    override fun findById(id: Long): TradeOrder? = jpa.findById(id).orElse(null)?.let { TradeOrderMapper.toDomain(it) }
+    override fun findById(id: Long): TradeOrder? = jpa.findById(id).orElse(null)?.toDomain()
 
-    override fun findAll(): List<TradeOrder> = jpa.findAll().map { TradeOrderMapper.toDomain(it) }
+    override fun findAll(): List<TradeOrder> = jpa.findAll().map { it.toDomain() }
 
     override fun update(entity: TradeOrder) {
         val existing =

@@ -37,11 +37,17 @@ class RepositoryConfig {
 
     @Bean
     @Profile("mem")
-    fun holdingRepositoryMem(): HoldingRepository = HoldingRepositoryMem()
+    fun holdingRepositoryMem(
+        userRepo: UserRepository,
+        stockRepo: StockRepository
+    ): HoldingRepository = HoldingRepositoryMem(userRepo, stockRepo)
 
     @Bean
     @Profile("mem")
-    fun tradeOrderRepositoryMem(): TradeOrderRepository = TradeOrderRepositoryMem()
+    fun tradeOrderRepositoryMem(
+        userRepo: UserRepository,
+        stockRepo: StockRepository
+    ): TradeOrderRepository  = TradeOrderRepositoryMem(userRepo, stockRepo)
 
     @Bean
     @Profile("jpa")
@@ -69,7 +75,12 @@ class RepositoryConfig {
 
     @Bean
     @Profile("jpa")
-    fun holdingRepositoryJpa(holdingJpa: HoldingJpaRepository): HoldingRepository = HoldingRepositoryJpa(holdingJpa)
+    fun holdingRepositoryJpa(
+        holdingJpa: HoldingJpaRepository,
+        userRepo: UserJpaRepository,
+        stockRepo: StockJpaRepository
+    ): HoldingRepository =
+        HoldingRepositoryJpa(holdingJpa, userRepo, stockRepo)
 
     @Bean
     @Profile("jpa")

@@ -3,7 +3,7 @@ package dev.freddiesilver.stocksim.repositories.company
 import dev.freddiesilver.stocksim.CompanyRepository
 import dev.freddiesilver.stocksim.company.Company
 import dev.freddiesilver.stocksim.entities.CompanyEntity
-import dev.freddiesilver.stocksim.mappers.CompanyMapper
+import dev.freddiesilver.stocksim.entities.toJpaEntity
 
 class CompanyRepositoryJpa(
     private val jpa: CompanyJpaRepository,
@@ -25,17 +25,17 @@ class CompanyRepositoryJpa(
                     baseDrift = drift,
                 ),
             )
-        return CompanyMapper.toDomain(entity)
+        return entity.toDomain()
     }
 
-    override fun findByTicker(ticker: String): Company? = jpa.findByTicker(ticker)?.let { CompanyMapper.toDomain(it) }
+    override fun findByTicker(ticker: String): Company? = jpa.findByTicker(ticker)?.toDomain()
 
-    override fun findById(id: Long): Company? = jpa.findById(id).orElse(null)?.let { CompanyMapper.toDomain(it) }
+    override fun findById(id: Long): Company? = jpa.findById(id).orElse(null)?.toDomain()
 
-    override fun findAll(): List<Company> = jpa.findAll().map { CompanyMapper.toDomain(it) }
+    override fun findAll(): List<Company> = jpa.findAll().map { it.toDomain() }
 
     override fun update(entity: Company) {
-        jpa.save(CompanyMapper.toEntity(entity))
+        jpa.save(entity.toJpaEntity())
     }
 
     override fun deleteById(id: Long) = jpa.deleteById(id)

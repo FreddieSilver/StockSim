@@ -4,7 +4,6 @@ import dev.freddiesilver.stocksim.UserRepository
 import dev.freddiesilver.stocksim.user.error.UserError
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
-import java.math.BigDecimal
 
 @Service
 @Transactional
@@ -33,20 +32,20 @@ class UserService(
 
     fun deposit(
         userId: Long,
-        amount: BigDecimal,
+        amount: Double,
     ): User {
         val user = userRepo.findById(userId) ?: throw UserError.UserNotFound()
-        user.deposit(amount)
+        user.deposit(amount.toBigDecimal())
         userRepo.update(user)
         return user
     }
 
     fun withdraw(
         userId: Long,
-        amount: BigDecimal,
+        amount: Double,
     ): User {
         val user = userRepo.findById(userId) ?: throw UserError.UserNotFound()
-        user.withdraw(amount)
+        user.withdraw(amount.toBigDecimal())
         userRepo.update(user)
         return user
     }

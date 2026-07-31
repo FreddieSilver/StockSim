@@ -2,7 +2,7 @@ package dev.freddiesilver.stocksim.repositories.pricepoint
 
 import dev.freddiesilver.stocksim.PricePointRepository
 import dev.freddiesilver.stocksim.entities.PricePointEntity
-import dev.freddiesilver.stocksim.mappers.PricePointMapper
+import dev.freddiesilver.stocksim.entities.toJpaEntity
 import dev.freddiesilver.stocksim.trading.stock.Price
 import dev.freddiesilver.stocksim.trading.stock.PricePoint
 import org.springframework.data.domain.PageRequest
@@ -36,16 +36,16 @@ class PricePointRepositoryJpa(
     ): List<PricePoint> {
         val page = PageRequest.of(0, limit)
         return jpa.findByStockIdOrderByTimestampDesc(stockId, page)
-            .map{PricePointMapper.toDomain(it)}.reversed()
+            .map{it.toDomain()}.reversed()
     }
 
-    override fun findById(id: Long): PricePoint? = jpa.findById(id).orElse(null)?.let { PricePointMapper.toDomain(it) }
+    override fun findById(id: Long): PricePoint? = jpa.findById(id).orElse(null)?.toDomain()
 
     override fun findAll(): List<PricePoint> =
-        jpa.findAll().map{ PricePointMapper.toDomain(it) }
+        jpa.findAll().map{ it.toDomain() }
 
     override fun update(entity: PricePoint) {
-        jpa.save(PricePointMapper.toEntity(entity))
+        jpa.save(entity.toJpaEntity())
     }
 
     override fun deleteById(id: Long) = jpa.deleteById(id)

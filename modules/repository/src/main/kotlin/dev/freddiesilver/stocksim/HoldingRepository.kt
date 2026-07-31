@@ -1,15 +1,16 @@
 package dev.freddiesilver.stocksim
 
 import dev.freddiesilver.stocksim.trading.holding.Holding
+import java.math.BigDecimal
 
 interface HoldingRepository : Repository<Holding> {
     fun createHolding(
         userId: Long,
         stockId: Long,
-        quantity: Int,
+        quantity: BigDecimal,
     ): Holding
 
-    fun findByUserAndStock(
+    fun findByUserIdAndStockId(
         userId: Long,
         stockId: Long,
     ): Holding?

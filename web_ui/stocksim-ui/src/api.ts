@@ -3,7 +3,7 @@ import type {
     UserLoginInput,
     TokenOutput,
     UserAuth,
-    PricePoint
+    PricePoint, TradeOrderInput, StockDetail
 } from "./types";
 //import { getErrorDescription } from "./errorDescriptions";
 
@@ -90,7 +90,27 @@ export const api = {
         return fetchApi<PricePoint[]>(`/stocks/${stockId}/history`, {
             method: "GET",
         });
-    }
+    },
+
+    async deposit(amount: number): Promise<void> {
+        await fetchApi<void>("/me/deposit", {
+            method: "POST",
+            body: JSON.stringify({ amount }),
+        });
+    },
+
+    async placeOrder(input: TradeOrderInput): Promise<void> {
+        await fetchApi<void>("/trade-orders/place", {
+            method: "POST",
+            body: JSON.stringify(input),
+        });
+    },
+
+    async getStock(stockId: number): Promise<StockDetail> {
+        return fetchApi<StockDetail>(`/stocks/${stockId}`, {
+            method: "GET",
+        });
+    },
 };
 
 export { ApiError };

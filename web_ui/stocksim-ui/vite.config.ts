@@ -11,7 +11,7 @@ export default defineConfig({
   server: {
     proxy: {
       // ^/ means starts with.
-      '^/(users|stocks|companies|me|logout)': {
+      '^/(users|stocks|companies|me|logout|trade-orders)': {
         target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,

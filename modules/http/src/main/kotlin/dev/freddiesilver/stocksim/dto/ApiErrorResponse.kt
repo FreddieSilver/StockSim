@@ -1,4 +1,4 @@
-package dev.freddiesilver.stocksim.dto.output
+package dev.freddiesilver.stocksim.dto
 
 import java.time.Instant
 

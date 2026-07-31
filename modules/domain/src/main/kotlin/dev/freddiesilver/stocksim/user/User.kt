@@ -11,15 +11,15 @@ data class User(
 ) {
     fun deposit(amount: BigDecimal) {
         require(amount > BigDecimal.ZERO) { "Deposit amount must be positive" }
-        this.balance = Balance(this.balance.value + amount)
+        balance = Balance(balance.value + amount)
     }
 
     fun withdraw(amount: BigDecimal) {
         require(amount > BigDecimal.ZERO) { "Withdrawal amount must be positive" }
-        if (this.balance.value < amount) {
+        if (balance.value < amount) {
             throw IllegalArgumentException("Insufficient balance")
         }
-        this.balance = Balance(this.balance.value - amount)
+        balance = Balance(balance.value - amount)
     }
 
     companion object {

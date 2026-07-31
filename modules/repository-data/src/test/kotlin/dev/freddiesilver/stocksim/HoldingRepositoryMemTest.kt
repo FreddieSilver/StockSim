@@ -20,8 +20,8 @@ class HoldingRepositoryMemTest {
     fun `createHolding returns holding with generated id`() {
         val holding = repo.createHolding(userId = 1L, stockId = 10L, quantity = 100)
         assertEquals(1L, holding.id)
-        assertEquals(1L, holding.userId)
-        assertEquals(10L, holding.stockId)
+        assertEquals(1L, holding.user)
+        assertEquals(10L, holding.stock)
         assertEquals(100, holding.quantity)
     }
 
@@ -61,7 +61,7 @@ class HoldingRepositoryMemTest {
     @Test
     fun `findByUserAndStock returns matching holding`() {
         repo.createHolding(userId = 1L, stockId = 10L, quantity = 100)
-        val found = repo.findByUserAndStock(userId = 1L, stockId = 10L)
+        val found = repo.findByUserIdAndStockId(userId = 1L, stockId = 10L)
         assertNotNull(found)
         assertEquals(100, found.quantity)
     }
@@ -69,8 +69,8 @@ class HoldingRepositoryMemTest {
     @Test
     fun `findByUserAndStock returns null when no match`() {
         repo.createHolding(userId = 1L, stockId = 10L, quantity = 100)
-        assertNull(repo.findByUserAndStock(userId = 1L, stockId = 99L))
-        assertNull(repo.findByUserAndStock(userId = 99L, stockId = 10L))
+        assertNull(repo.findByUserIdAndStockId(userId = 1L, stockId = 99L))
+        assertNull(repo.findByUserIdAndStockId(userId = 99L, stockId = 10L))
     }
 
     @Test
@@ -80,7 +80,7 @@ class HoldingRepositoryMemTest {
         repo.createHolding(userId = 2L, stockId = 30L, quantity = 300)
         val user1Holdings = repo.findByUserId(userId = 1L)
         assertEquals(2, user1Holdings.size)
-        assertTrue(user1Holdings.all { it.userId == 1L })
+        assertTrue(user1Holdings.all { it.user == 1L })
     }
 
     @Test
@@ -99,7 +99,7 @@ class HoldingRepositoryMemTest {
 
     @Test
     fun `update with id zero creates new holding`() {
-        val holding = Holding(userId = 1L, stockId = 10L, quantity = 100)
+        val holding = Holding(user = 1L, stock = 10L, quantity = 100)
         repo.update(holding)
         assertEquals(1, repo.findAll().size)
     }

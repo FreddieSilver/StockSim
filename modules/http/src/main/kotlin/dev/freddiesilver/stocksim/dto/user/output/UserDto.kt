@@ -1,6 +1,6 @@
 package dev.freddiesilver.stocksim.dto.user.output
 
-data class UserHomeResponseDto(
+data class UserDto(
     val id: Long,
     val username: String,
     val email: String,

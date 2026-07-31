@@ -1,0 +1,10 @@
+### TEST PLACE TRADE ORDER
+POST http://localhost:8080/trade-orders/place
+Content-Type: application/json
+Authorization: bearer 6K0NWWlHfHpdfmAchE5a2FkFAhXdXZvZt5B_5m43nhM
+
+{
+  "stockId": 1,
+  "type": "SELL",
+  "quantity": 1.45
+}

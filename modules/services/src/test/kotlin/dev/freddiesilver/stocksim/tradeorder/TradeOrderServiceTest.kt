@@ -140,7 +140,7 @@ class TradeOrderServiceTest {
         val userId = createTestUser()
         val stockId = createTestStock()
         service.placeOrder(userId, stockId, OrderType.BUY, 10, Price(BigDecimal("1500.00")))
-        val holding = holdingRepo.findByUserAndStock(userId, stockId)
+        val holding = holdingRepo.findByUserIdAndStockId(userId, stockId)
         assertNotNull(holding)
         assertEquals(10, holding.quantity)
     }
@@ -151,7 +151,7 @@ class TradeOrderServiceTest {
         val stockId = createTestStock()
         service.placeOrder(userId, stockId, OrderType.BUY, 10, Price(BigDecimal("1500.00")))
         service.placeOrder(userId, stockId, OrderType.BUY, 5, Price(BigDecimal("750.00")))
-        val holding = holdingRepo.findByUserAndStock(userId, stockId)
+        val holding = holdingRepo.findByUserIdAndStockId(userId, stockId)
         assertNotNull(holding)
         assertEquals(15, holding.quantity)
     }
@@ -199,7 +199,7 @@ class TradeOrderServiceTest {
         val stockId = createTestStock()
         holdingRepo.createHolding(userId, stockId, 10)
         service.placeOrder(userId, stockId, OrderType.SELL, 4, Price(BigDecimal("600.00")))
-        val holding = holdingRepo.findByUserAndStock(userId, stockId)
+        val holding = holdingRepo.findByUserIdAndStockId(userId, stockId)
         assertNotNull(holding)
         assertEquals(6, holding.quantity)
     }

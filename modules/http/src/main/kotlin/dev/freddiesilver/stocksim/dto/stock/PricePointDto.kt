@@ -1,6 +1,6 @@
 package dev.freddiesilver.stocksim.dto.stock
 
 class PricePointDto(
-    val time: String,
+    val timestamp: String,
     val price: Double
 )

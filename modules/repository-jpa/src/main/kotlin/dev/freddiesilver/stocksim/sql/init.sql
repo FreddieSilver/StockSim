@@ -33,7 +33,7 @@ CREATE TABLE holdings (
                           id BIGSERIAL PRIMARY KEY,
                           user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
                           stock_id BIGINT NOT NULL REFERENCES stocks(id) ON DELETE CASCADE,
-                          quantity INT NOT NULL,
+                          quantity DECIMAL(19, 4) NOT NULL,
                           UNIQUE (user_id, stock_id) -- user can only have one holding record per stock
 );
 
@@ -42,7 +42,7 @@ CREATE TABLE trade_orders (
                               user_id BIGINT NOT NULL REFERENCES users(id),
                               stock_id BIGINT NOT NULL REFERENCES stocks(id),
                               type VARCHAR(10) NOT NULL,
-                              quantity INT NOT NULL,
+                              quantity DECIMAL(19, 4) NOT NULL,
                               price_at_order DECIMAL(19, 4) NOT NULL,
                               status VARCHAR(20) NOT NULL
 );

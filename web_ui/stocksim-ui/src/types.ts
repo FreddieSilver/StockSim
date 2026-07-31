@@ -47,5 +47,26 @@ export interface StockData {
     history?: PricePoint[];
 }
 
+export interface StockDetail {
+    id: number;
+    company: CompanyDetail;
+    price: number
+}
+
+export interface CompanyDetail {
+    id: number;
+    name: string
+    ticker: string
+    description: string
+    volatility: number;
+    drift: number;
+}
+
+export interface TradeOrderInput {
+    stockId: number;
+    type: "BUY" | "SELL";
+    quantity: number;
+}
+
 
 

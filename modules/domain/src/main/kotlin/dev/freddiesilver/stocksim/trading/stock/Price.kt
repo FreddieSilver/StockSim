@@ -12,7 +12,7 @@ data class Price(
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is Price) return false
-        return this.value.compareTo(other.value) == 0
+        return value.compareTo(other.value) == 0
     }
 
     override fun hashCode(): Int = value.stripTrailingZeros().hashCode()

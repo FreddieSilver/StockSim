@@ -178,3 +178,33 @@
     color: var(--text-muted);
     text-align: center;
 }
+
+.stock-expanded-view {
+    display: flex;
+    gap: 20px;
+    padding: 10px 20px 30px 10px;
+    background: var(--surface-soft);
+    border-top: 1px dashed var(--border);
+    animation: slideDown 0.2s ease-out;
+}
+
+.stock-chart-container {
+    flex: 3; /* Takes up 75% of the space */
+    background: transparent;
+    padding: 0;
+    border: none;
+}
+
+.stock-trade-panel {
+    flex: 1; /* Takes up 25% of the space */
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 20px;
+}
+
+@media (max-width: 900px) {
+    .stock-expanded-view {
+        flex-direction: column;
+    }
+}

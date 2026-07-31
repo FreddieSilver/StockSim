@@ -1,17 +1,16 @@
 package dev.freddiesilver.stocksim
 
-import dev.freddiesilver.stocksim.trading.stock.Stock
 import dev.freddiesilver.stocksim.trading.tradeorder.OrderStatus
 import dev.freddiesilver.stocksim.trading.tradeorder.OrderType
 import dev.freddiesilver.stocksim.trading.tradeorder.TradeOrder
-import dev.freddiesilver.stocksim.user.User
+import java.math.BigDecimal
 
 interface TradeOrderRepository : Repository<TradeOrder> {
     fun createOrder(
-        user: User,
-        stock: Stock,
+        userId: Long,
+        stockId: Long,
         type: OrderType,
-        quantity: Int,
+        quantity: BigDecimal,
     ): TradeOrder
 
     fun findByUserId(userId: Long): List<TradeOrder>
