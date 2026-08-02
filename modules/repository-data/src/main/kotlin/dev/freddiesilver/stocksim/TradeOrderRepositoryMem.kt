@@ -4,6 +4,7 @@ import dev.freddiesilver.stocksim.trading.tradeorder.OrderStatus
 import dev.freddiesilver.stocksim.trading.tradeorder.OrderType
 import dev.freddiesilver.stocksim.trading.tradeorder.TradeOrder
 import java.math.BigDecimal
+import java.time.Instant
 
 class TradeOrderRepositoryMem(
     private val userRepo: UserRepository,
@@ -17,6 +18,7 @@ class TradeOrderRepositoryMem(
         stockId: Long,
         type: OrderType,
         quantity: BigDecimal,
+        time: Instant
     ): TradeOrder {
         val user = userRepo.findById(userId)
             ?: throw IllegalArgumentException("User not found with ID: $userId")
@@ -24,6 +26,7 @@ class TradeOrderRepositoryMem(
             ?: throw IllegalArgumentException("Stock not found with ID: $stockId")
         return TradeOrder(
             id = nextId++,
+            timestamp = time,
             user = user,
             stock = stock,
             type = type,
@@ -48,6 +51,7 @@ class TradeOrderRepositoryMem(
             val newOrder =
                 TradeOrder(
                     id = nextId++,
+                    timestamp = Instant.now(),
                     user = entity.user,
                     stock = entity.stock,
                     type = entity.type,

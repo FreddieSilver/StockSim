@@ -186,6 +186,7 @@
     background: var(--surface-soft);
     border-top: 1px dashed var(--border);
     animation: slideDown 0.2s ease-out;
+    align-items: center; /* <-- ADD THIS LINE to vertically center the graph and panel */
 }
 
 .stock-chart-container {

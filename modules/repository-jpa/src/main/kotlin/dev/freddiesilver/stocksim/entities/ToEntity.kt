@@ -44,6 +44,7 @@ fun PricePoint.toJpaEntity(): PricePointEntity =
 fun TradeOrder.toJpaEntity(): TradeOrderEntity =
     TradeOrderEntity(
         id = id,
+        timestamp = timestamp,
         user = user.toJpaEntity(),
         stock = stock.toJpaEntity(),
         type = type,

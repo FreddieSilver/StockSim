@@ -35,7 +35,7 @@ export interface StockUpdate {
 }
 
 export interface PricePoint {
-    time: string;
+    timestamp: string;
     price: number;
 }
 
@@ -69,12 +69,15 @@ export interface TradeOrderInput {
 }
 
 export interface Holding {
+    id: number;
     user: User;
     stock: StockDetail;
     quantity: number;
 }
 
 export interface Order {
+    id: number;
+    timestamp: string;
     stock: StockDetail;
     type: "BUY" | "SELL";
     quantity: number;

@@ -3,7 +3,6 @@ package dev.freddiesilver.stocksim.repositories.pricepoint
 import dev.freddiesilver.stocksim.PricePointRepository
 import dev.freddiesilver.stocksim.entities.PricePointEntity
 import dev.freddiesilver.stocksim.entities.toJpaEntity
-import dev.freddiesilver.stocksim.trading.stock.Price
 import dev.freddiesilver.stocksim.trading.stock.PricePoint
 import org.springframework.data.domain.PageRequest
 import java.math.BigDecimal
@@ -20,14 +19,7 @@ class PricePointRepositoryJpa(
             timestamp = time
         )
         val saved = jpa.save(entity)
-        return PricePoint(
-            id = saved.id,
-            stockId = saved.stockId,
-            timestamp = saved.timestamp,
-            price = Price(
-                saved.price
-            )
-        )
+        return saved.toDomain()
     }
 
     override fun findRecentByStockId(

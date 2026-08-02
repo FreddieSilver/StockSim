@@ -39,7 +39,7 @@ export function useTradeOrder(stockId: number, ticker: string) {
         setTradeLoading(true);
         try {
             await api.placeOrder({ stockId, type, quantity: numQuantity });
-            notify(`Successfully placed ${type} order for ${numQuantity} shares of ${ticker}!`, 'success');
+            notify(`Successfully placed ${type.toLowerCase()} order for ${numQuantity} shares of ${ticker}!`, 'success');
             await refreshUser(); // Update navbar balance
             await fetchOwnedQuantity(); // Update owned shares max amount
             setQuantity(""); // Reset input
@@ -63,7 +63,7 @@ export function StockChart({ data, height = 300, yAxisWidth = 60 }: StockChartPr
     return (
         <ResponsiveContainer width="100%" height={height}>
             <LineChart data={data}>
-                <XAxis dataKey="time" stroke="#64748b" fontSize={12} tickMargin={10} minTickGap={20} />
+                <XAxis dataKey="timestamp" stroke="#64748b" fontSize={12} tickMargin={10} minTickGap={20} />
                 <YAxis domain={['dataMin', 'dataMax']} stroke="#64748b" fontSize={12} tickFormatter={(val) => `$${Number(val).toFixed(2)}`} width={yAxisWidth} />
 
                 <Tooltip
@@ -135,7 +135,7 @@ export function TradePanel({ stockId, ticker, price, user, quantity, setQuantity
                     </div>
 
                     {/* Number Input (Fractional) */}
-                    <label style={{ fontSize: "12px", color: "var(--text-muted)", marginTop: "5px" }}>Shares to {action}</label>
+                    <label style={{ fontSize: "12px", color: "var(--text-muted)", marginTop: "5px" }}>Shares to {action.toLowerCase()}</label>
                     <input
                         type="number"
                         min="0"

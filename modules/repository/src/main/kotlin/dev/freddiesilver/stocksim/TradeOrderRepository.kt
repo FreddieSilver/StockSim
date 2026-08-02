@@ -4,6 +4,7 @@ import dev.freddiesilver.stocksim.trading.tradeorder.OrderStatus
 import dev.freddiesilver.stocksim.trading.tradeorder.OrderType
 import dev.freddiesilver.stocksim.trading.tradeorder.TradeOrder
 import java.math.BigDecimal
+import java.time.Instant
 
 interface TradeOrderRepository : Repository<TradeOrder> {
     fun createOrder(
@@ -11,6 +12,7 @@ interface TradeOrderRepository : Repository<TradeOrder> {
         stockId: Long,
         type: OrderType,
         quantity: BigDecimal,
+        time: Instant
     ): TradeOrder
 
     fun findByUserId(userId: Long): List<TradeOrder>

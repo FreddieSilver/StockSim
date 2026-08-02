@@ -13,6 +13,7 @@ import dev.freddiesilver.stocksim.user.User
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
+import java.time.Clock
 
 @Service
 @Transactional
@@ -21,6 +22,7 @@ class TradeOrderService(
     private val stockRepo: StockRepository,
     private val holdingRepo: HoldingRepository,
     private val tradeOrderRepo: TradeOrderRepository,
+    private val clock: Clock
 ) {
     fun placeOrder(
         userId: Long,
@@ -80,6 +82,7 @@ class TradeOrderService(
                 stockId = stock.id,
                 type = OrderType.BUY,
                 quantity = quantity,
+                time = clock.instant()
             )
         return order
     }
@@ -111,6 +114,7 @@ class TradeOrderService(
                 stockId = stock.id,
                 type = OrderType.SELL,
                 quantity = quantity,
+                time = clock.instant()
             )
         return order
     }

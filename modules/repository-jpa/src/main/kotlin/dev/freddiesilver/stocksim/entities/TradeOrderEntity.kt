@@ -15,6 +15,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import java.math.BigDecimal
+import java.time.Instant
 
 @Entity
 @Table(name = "trade_orders")
@@ -23,6 +24,8 @@ class TradeOrderEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
     // Notice we link to the UserEntity and StockEntity directly here
+    @Column(nullable = false)
+    val timestamp: Instant,
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     val user: UserEntity,
@@ -42,6 +45,7 @@ class TradeOrderEntity(
 ){
     fun toDomain() = TradeOrder(
         id = id,
+        timestamp = timestamp,
         user = user.toDomain(),
         stock = stock.toDomain(),
         type = type,

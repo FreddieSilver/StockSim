@@ -8,6 +8,7 @@ import dev.freddiesilver.stocksim.trading.tradeorder.OrderStatus
 import dev.freddiesilver.stocksim.trading.tradeorder.OrderType
 import dev.freddiesilver.stocksim.trading.tradeorder.TradeOrder
 import java.math.BigDecimal
+import java.time.Instant
 
 class TradeOrderRepositoryJpa(
     private val jpa: TradeOrderJpaRepository,
@@ -19,11 +20,13 @@ class TradeOrderRepositoryJpa(
         stockId: Long,
         type: OrderType,
         quantity: BigDecimal,
+        time: Instant
     ): TradeOrder {
         val userProxy = userJpaRepository.getReferenceById(userId)
         val stockProxy = stockJpaRepository.getReferenceById(stockId)
         val tradeOrder =
             TradeOrderEntity(
+                timestamp = time,
                 user = userProxy,
                 stock = stockProxy,
                 type = type,

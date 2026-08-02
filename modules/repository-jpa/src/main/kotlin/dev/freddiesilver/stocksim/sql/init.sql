@@ -39,6 +39,7 @@ CREATE TABLE holdings (
 
 CREATE TABLE trade_orders (
                               id BIGSERIAL PRIMARY KEY,
+                              timestamp TIMESTAMP WITH TIME ZONE NOT NULL,
                               user_id BIGINT NOT NULL REFERENCES users(id),
                               stock_id BIGINT NOT NULL REFERENCES stocks(id),
                               type VARCHAR(10) NOT NULL,

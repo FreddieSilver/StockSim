@@ -15,7 +15,7 @@ import dev.freddiesilver.stocksim.user.User
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
-private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss").withZone(ZoneId.systemDefault())
+private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy ").withZone(ZoneId.systemDefault())
 
 fun Company.toDto(): CompanyDto =
     CompanyDto(
@@ -46,6 +46,8 @@ fun User.toDto(): UserDto =
 
 fun TradeOrder.toDto(): TradeOrderDto =
     TradeOrderDto(
+        id = id,
+        timestamp = timeFormatter.format(this.timestamp),
         stock = stock.toDto(),
         type = type.name,
         quantity = quantity.toDouble(),
@@ -61,6 +63,7 @@ fun PricePoint.toDto(): PricePointDto =
 
 fun Holding.toDto(): HoldingDto =
     HoldingDto(
+        id = id,
         user = user.toDto(),
         stock = stock.toDto(),
         quantity = quantity.toDouble()
