@@ -3,7 +3,7 @@ POST http://localhost:8080/stocks
 Content-Type: application/json
 
 {
-  "companyId": 2,
+  "companyId": 3,
   "initialPrice": 50.0
 }
 

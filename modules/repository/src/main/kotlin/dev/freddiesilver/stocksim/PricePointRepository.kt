@@ -8,4 +8,7 @@ interface PricePointRepository: Repository<PricePoint> {
     fun createPricePoint(stockId: Long, price: BigDecimal, time: Instant): PricePoint
 
     fun findRecentByStockId(stockId: Long, limit:Int): List<PricePoint>
+
+    // optimized findall by stock method
+    fun findDownsampledByStockId(stockId: Long, targetPointCount: Int): List<PricePoint>
 }

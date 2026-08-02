@@ -6,6 +6,7 @@ import dev.freddiesilver.stocksim.StockRepository
 import dev.freddiesilver.stocksim.stock.error.StockError
 import dev.freddiesilver.stocksim.trading.stock.PricePoint
 import dev.freddiesilver.stocksim.trading.stock.Stock
+import dev.freddiesilver.stocksim.trading.stock.TimeFrame
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 
@@ -41,8 +42,14 @@ class StockService(
         return updatedStock
     }
 
-    fun getStockHistory(id:Long, limit:Int):List<PricePoint>{
+    fun getStockHistory(id: Long, timeframe: TimeFrame): List<PricePoint> {
         stockRepo.findById(id) ?: throw StockError.StockNotFound()
-        return pricePointRepo.findRecentByStockId(id, limit)
+
+        return when (timeframe) {
+            TimeFrame.ONE_MINUTE -> pricePointRepo.findRecentByStockId(id, 30)       // 30 ticks
+            TimeFrame.FIVE_MINUTES -> pricePointRepo.findRecentByStockId(id, 150)      // 150 ticks
+            TimeFrame.THIRTY_MINUTES -> pricePointRepo.findRecentByStockId(id, 900)     // 900 ticks
+            TimeFrame.ALL -> pricePointRepo.findDownsampledByStockId(id, 150) // Let the DB downsample to 150 points!
+        }
     }
 }

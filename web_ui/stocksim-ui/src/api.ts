@@ -86,8 +86,8 @@ export const api = {
         localStorage.removeItem("stocksim_token");
     },
 
-    async getStockHistory(stockId: number): Promise<PricePoint[]> {
-        return fetchApi<PricePoint[]>(`/stocks/${stockId}/history`, {
+    async getStockHistory(stockId: number, timeframe: string = "5M"): Promise<PricePoint[]> {
+        return fetchApi<PricePoint[]>(`/stocks/${stockId}/history?timeframe=${timeframe}`, {
             method: "GET",
         });
     },

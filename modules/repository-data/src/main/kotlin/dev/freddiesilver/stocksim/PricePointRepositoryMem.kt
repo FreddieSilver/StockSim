@@ -25,6 +25,19 @@ class PricePointRepositoryMem: PricePointRepository {
     ): List<PricePoint> = history.filter { it.stockId == stockId }.
     sortedByDescending { it.timestamp }.take(limit).reversed()
 
+    override fun findDownsampledByStockId(stockId: Long, targetPointCount: Int): List<PricePoint> {
+        val stockHistory = history.filter { it.stockId == stockId }.sortedBy { it.timestamp }
+        if (stockHistory.size <= targetPointCount) return stockHistory
+
+        val step = stockHistory.size.toDouble() / targetPointCount
+        val downsampled = mutableListOf<PricePoint>()
+
+        for (i in 0 until targetPointCount) {
+            val index = (i * step).toInt().coerceAtMost(stockHistory.size - 1)
+            downsampled.add(stockHistory[index])
+        }
+        return downsampled
+    }
 
     override fun findById(id: Long): PricePoint? =
         history.find { it.id == id }

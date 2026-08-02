@@ -82,5 +82,7 @@ export interface Order {
     status: string;
 }
 
+export type Timeframe = "1M" | "5M" | "30M" | "ALL";
+
 
 

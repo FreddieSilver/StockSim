@@ -10,6 +10,7 @@ import {UserProfile} from "./components/UserProfile.tsx";
 import {ProtectedRoute} from "./components/ProtectedRoute.tsx";
 import {Market} from "./components/Market.tsx";
 import {StockScreen} from "./components/StockScreen.tsx";
+import {NotificationProvider} from "./NotificationContext.tsx";
 
 const router = createBrowserRouter([
     {
@@ -44,6 +45,8 @@ const container =
 
 createRoot(container).render(
     <AuthProvider>
-        <RouterProvider router={router} />
+        <NotificationProvider>
+            <RouterProvider router={router} />
+        </NotificationProvider>
     </AuthProvider>
 );

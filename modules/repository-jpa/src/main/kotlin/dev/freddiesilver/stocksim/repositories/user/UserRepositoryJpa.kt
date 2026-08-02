@@ -30,7 +30,7 @@ class UserRepositoryJpa(
                 passwordValidationInfo = password.validationInfo,
                 balance = BigDecimal.ZERO,
             )
-        return entity.toDomain()
+        return jpa.save(entity).toDomain()
     }
 
     override fun findByEmail(email: String): User? = jpa.findByEmail(email)?.toDomain()

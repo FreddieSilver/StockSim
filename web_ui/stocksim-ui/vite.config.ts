@@ -16,6 +16,7 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
       }
-    }
+    },
+    allowedHosts: ['vizorless-savouriest-melodee.ngrok-free.dev']
   }
 })
