@@ -11,8 +11,10 @@ Stock Simulator
 - add holdings to frontend DONE and be able to sort by time DONE
 - zoomable graph DONE
 - slider for spending DONE
-- add time to tradeorder
-- 
+- add time to tradeorder and get it to work correctly
+- organize typescript DONE
+- add cookies DONE
+- fix bug when refreshing on portfolio
 
 ## long-term Features:
 

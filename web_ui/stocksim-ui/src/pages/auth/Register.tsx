@@ -1,7 +1,7 @@
 import React, { useReducer } from "react";
 import { useNavigate } from "react-router";
-import { api, ApiError } from "../api";
-import "../styles/App.css";
+import { api, ApiError } from "../../api/api.ts";
+import "../../styles/App.css";
 
 type State = {
   username: string;

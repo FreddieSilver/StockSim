@@ -1,8 +1,7 @@
 import { Link } from "react-router";
-import { useAuth } from "../AuthContext";
-import "../styles/App.css";
+import { useAuth } from "../contexts/AuthContext";
 
-export default function TitleScreen() {
+export default function TitlePage() {
     const { user } = useAuth();
 
     return (

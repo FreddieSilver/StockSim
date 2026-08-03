@@ -1,8 +1,14 @@
-import { useEffect, useReducer } from 'react';
-import type { StockData, StockUpdate, PricePoint } from '../types';
-import { api } from '../api';
-import { StockChart, TradePanel, useTradeOrder } from './SharedComponents';
-import '../styles/App.css';
+import { useReducer } from "react";
+import { api } from "../../api/api.ts";
+import { StockChart } from "../../components/charts/StockChart";
+import { TradePanel } from "../../components/trading/TradePanel";
+import { useStockStream } from "../../hooks/useStockStream";
+import { useTradeOrder } from "../../hooks/useTradeOrder";
+import type { PricePoint, StockData, StockUpdate } from "../../types";
+import "../../styles/App.css";
+
+type StockStreamUpdateHandler = (updates: StockUpdate[], currentTime: string) => void;
+type StockStreamStatusHandler = (status: string) => void;
 
 type State = {
     stocks: Record<number, StockData>;
@@ -26,7 +32,7 @@ function reducer(state: State, action: Action): State {
                 const current = nextStocks[update.stock_id];
                 const history = current?.history ? [...current.history] : [];
 
-                history.push({ time: action.currentTime, price: update.price });
+                history.push({ timestamp: action.currentTime, price: update.price });
                 if (history.length > 150) history.shift();
 
                 nextStocks[update.stock_id] = {
@@ -52,20 +58,13 @@ function reducer(state: State, action: Action): State {
     }
 }
 
-export function Market() {
+export function MarketPage() {
     const [state, dispatch] = useReducer(reducer, initialState);
 
-    useEffect(() => {
-        const eventSource = new EventSource('/stocks/stream');
-        eventSource.onopen = () => dispatch({ type: "set-status", status: '🟢 Live Market Open' });
-        eventSource.addEventListener('PRICE-UPDATE', (event) => {
-            const updates = JSON.parse(event.data);
-            const currentTime = new Date().toLocaleTimeString('en-US', { hour12: false, hour: "2-digit", minute: "2-digit", second: "2-digit" });
-            dispatch({ type: "update-stocks", updates, currentTime });
-        });
-        eventSource.onerror = () => dispatch({ type: "set-status", status: '🔴 Connection Lost. Reconnecting...' });
-        return () => eventSource.close();
-    }, []);
+    useStockStream({
+        onUpdates: ((updates: StockUpdate[], currentTime: string) => dispatch({ type: "update-stocks", updates, currentTime })) as StockStreamUpdateHandler,
+        onStatusChange: ((status: string) => dispatch({ type: "set-status", status })) as StockStreamStatusHandler,
+    });
 
     const toggleStockSelection = async (id: number) => {
         const isCurrentlyExpanded = state.expandedStockIds.includes(id);
@@ -74,7 +73,7 @@ export function Market() {
         if (!isCurrentlyExpanded) {
             try {
                 const rawHistory = await api.getStockHistory(id, "5M");
-                const formattedHistory = rawHistory.map((p: any) => ({ time: p.timestamp || p.time, price: p.price }));
+                const formattedHistory = rawHistory.map((p: any) => ({ timestamp: p.timestamp || p.time, price: p.price }));
                 dispatch({ type: "set-history", stockId: id, history: formattedHistory });
             } catch (error) {
                 console.error("Failed to fetch history");
@@ -151,3 +150,4 @@ function ExpandedStockView({ stock }: { stock: StockData }) {
         </div>
     );
 }
+

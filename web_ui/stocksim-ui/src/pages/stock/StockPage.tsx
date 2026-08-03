@@ -1,11 +1,21 @@
-import { useEffect, useReducer } from 'react';
-import { useParams, useNavigate } from 'react-router';
-import { api } from '../api';
-import { StockChart, TradePanel, useTradeOrder } from './SharedComponents';
-import type { StockDetail, PricePoint, StockUpdate } from '../types';
-import '../styles/App.css';
+import { useEffect, useReducer } from "react";
+import { useNavigate, useParams } from "react-router";
+import { api } from "../../api/api.ts";
+import { StockChart } from "../../components/charts/StockChart";
+import { TradePanel } from "../../components/trading/TradePanel";
+import { useStockStream } from "../../hooks/useStockStream";
+import { useTradeOrder } from "../../hooks/useTradeOrder";
+import type { PricePoint, StockDetail, StockUpdate } from "../../types";
+import "../../styles/App.css";
 
 type Timeframe = "1M" | "5M" | "30M" | "ALL";
+
+const MAX_POINTS_MAP: Record<string, number> = {
+    "1M": 30,
+    "5M": 150,
+    "30M": 900,
+    "ALL": 2000
+};
 
 type State = {
     stock: StockDetail | null;
@@ -29,12 +39,9 @@ function reducer(state: State, action: Action): State {
         case "set-history":
             return { ...state, history: action.history };
         case "update-live-price": {
-            const newHistory = [...state.history, { time: action.currentTime, price: action.price }];
+            const newHistory = [...state.history, { timestamp: action.currentTime, price: action.price }];
 
-            let maxPoints = 30; // 1 Min
-            if (state.timeframe === "5M") maxPoints = 150;
-            if (state.timeframe === "30M") maxPoints = 900;
-            if (state.timeframe === "ALL") maxPoints = 2000;
+            let maxPoints = MAX_POINTS_MAP[state.timeframe];
 
             if (newHistory.length > maxPoints) newHistory.shift();
             return { ...state, livePrice: action.price, history: newHistory };
@@ -45,7 +52,7 @@ function reducer(state: State, action: Action): State {
     }
 }
 
-export function StockScreen() {
+export function StockPage() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const [state, dispatch] = useReducer(reducer, initialState);
@@ -58,7 +65,10 @@ export function StockScreen() {
         const fetchInitialData = async () => {
             try {
                 const rawHistory = await api.getStockHistory(Number(id), state.timeframe);
-                const formattedHistory = rawHistory.map((p: any) => ({ time: p.timestamp || p.time, price: p.price }));
+                const formattedHistory = rawHistory.map((p: any) => ({
+                    timestamp: p.timestamp || p.time,
+                    price: p.price
+                }));
 
                 if (state.stock) {
                     dispatch({ type: "set-history", history: formattedHistory });
@@ -73,19 +83,14 @@ export function StockScreen() {
         fetchInitialData()
     }, [id, state.timeframe, navigate]);
 
-    useEffect(() => {
-        if (!id) return;
-        const eventSource = new EventSource('/stocks/stream');
-        eventSource.addEventListener('PRICE-UPDATE', (event) => {
-            const updates: StockUpdate[] = JSON.parse(event.data);
-            const myUpdate = updates.find(u => u.stock_id === Number(id));
+    useStockStream({
+        onUpdates: (updates: StockUpdate[], currentTime: string) => {
+            const myUpdate = updates.find((update) => update.stock_id === Number(id));
             if (myUpdate) {
-                const currentTime = new Date().toLocaleTimeString('en-US', { hour12: false, hour: "2-digit", minute: "2-digit", second: "2-digit" });
                 dispatch({ type: "update-live-price", price: myUpdate.price, currentTime });
             }
-        });
-        return () => eventSource.close();
-    }, [id]);
+        },
+    });
 
     if (!state.stock) return <div className="loading-text">Loading stock data...</div>;
 
@@ -155,3 +160,4 @@ export function StockScreen() {
         </div>
     );
 }
+

@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useNavigate, Link } from "react-router";
-import { useAuth } from "../AuthContext";
+import { useAuth } from "../contexts/AuthContext";
 import "../styles/App.css";
 
 export function Layout() {

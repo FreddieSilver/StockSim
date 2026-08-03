@@ -1,6 +1,6 @@
-
-import './styles/App.css';
+import '../styles/App.css';
 import {createContext, type ReactNode, useContext, useState} from "react";
+import { Toast } from "../components/ui/Toast";
 
 type NotificationType = 'success' | 'error' | 'info';
 
@@ -34,9 +34,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
             {children}
             <div className="toast-container">
                 {notifications.map(n => (
-                    <div key={n.id} className={`toast toast-${n.type}`}>
-                        {n.message}
-                    </div>
+                    <Toast key={n.id} message={n.message} type={n.type} />
                 ))}
             </div>
         </NotificationContext.Provider>
@@ -48,3 +46,4 @@ export const useNotification = () => {
     if (!context) throw new Error("useNotification must be used within NotificationProvider");
     return context;
 };
+

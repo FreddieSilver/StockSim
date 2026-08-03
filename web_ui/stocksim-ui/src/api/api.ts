@@ -1,16 +1,20 @@
 import type {
-    UserRegisterInput,
-    UserLoginInput,
+    Holding,
+    Order,
+    PricePoint,
+    StockDetail,
     TokenOutput,
+    TradeOrderInput,
     UserAuth,
-    PricePoint, TradeOrderInput, StockDetail, Holding, Order
-} from "./types";
-//import { getErrorDescription } from "./errorDescriptions";
+    UserLoginInput,
+    UserRegisterInput,
+} from "../types";
 
 const API_BASE_URL = "";
 
-class ApiError extends Error {
+export class ApiError extends Error {
     public status: number;
+
     constructor(status: number, message: string) {
         super(message);
         this.status = status;
@@ -20,13 +24,12 @@ class ApiError extends Error {
 export function getAuthHeaders(): Record<string, string> {
     const headers: Record<string, string> = {
         "Content-Type": "application/json",
-        "Accept": "application/json"
+        Accept: "application/json",
     };
 
-    // fetch the token from localStorage
     const token = localStorage.getItem("stocksim_token");
     if (token) {
-        headers["Authorization"] = `Bearer ${token}`;
+        headers.Authorization = `Bearer ${token}`;
     }
 
     return headers;
@@ -35,6 +38,7 @@ export function getAuthHeaders(): Record<string, string> {
 async function fetchApi<T>(path: string, options: RequestInit = {}): Promise<T> {
     const response = await fetch(`${API_BASE_URL}${path}`, {
         ...options,
+        credentials: "include",
         headers: {
             ...getAuthHeaders(),
             ...options.headers,
@@ -43,7 +47,6 @@ async function fetchApi<T>(path: string, options: RequestInit = {}): Promise<T> 
 
     if (!response.ok) {
         const error = await response.json().catch(() => ({ error: "Unknown error" }));
-        // {"error": "..."} for failures
         throw new ApiError(response.status, error.error || response.statusText);
     }
 
@@ -68,7 +71,6 @@ export const api = {
             method: "POST",
             body: JSON.stringify(input),
         });
-        // save the token when we login
         localStorage.setItem("stocksim_token", res.token);
         return res;
     },
@@ -80,9 +82,8 @@ export const api = {
     async logout(): Promise<void> {
         await fetchApi<void>("/users/logout", {
             method: "POST",
-        }).catch(() => {}); // ignore errors on logout
+        }).catch(() => {});
 
-        // remove the token when we logout
         localStorage.removeItem("stocksim_token");
     },
 
@@ -118,7 +119,5 @@ export const api = {
 
     async getMyOrders(): Promise<Order[]> {
         return fetchApi<Order[]>("/me/orders", { method: "GET" });
-    }
+    },
 };
-
-export { ApiError };

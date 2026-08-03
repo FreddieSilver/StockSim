@@ -1,32 +1,32 @@
 import "./styles/App.css";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router";
-import { AuthProvider } from "./AuthContext";
-import {Layout} from "./components/Layout.tsx";
-import TitleScreen from "./components/TitleScreen.tsx";
-import {Login} from "./components/Login.tsx";
-import {Register} from "./components/Register.tsx";
-import {UserProfile} from "./components/UserProfile.tsx";
-import {ProtectedRoute} from "./components/ProtectedRoute.tsx";
-import {Market} from "./components/Market.tsx";
-import {StockScreen} from "./components/StockScreen.tsx";
-import {NotificationProvider} from "./NotificationContext.tsx";
+import { AuthProvider } from "./contexts/AuthContext";
+import { Layout } from "./components/Layout";
+import TitlePage from "./pages/TitlePage.tsx";
+import { Login } from "./pages/auth/Login";
+import { Register } from "./pages/auth/Register";
+import { UserPage } from "./pages/profile/UserPage.tsx";
+import { ProtectedRoute } from "./pages/auth/ProtectedRoute";
+import { MarketPage } from "./pages/market/MarketPage";
+import { StockPage } from "./pages/stock/StockPage";
+import { NotificationProvider } from "./contexts/NotificationContext";
 
 const router = createBrowserRouter([
     {
         path: "/",
         element: <Layout />,
         children: [
-            { path: "", element: <TitleScreen /> },
+            { path: "", element: <TitlePage /> },
             { path: "login", element: <Login /> },
             { path: "register", element: <Register /> },
-            { path: "market", element: <Market /> },
-            { path: "stock/:id", element: <StockScreen /> },
+            { path: "market", element: <MarketPage /> },
+            { path: "stock/:id", element: <StockPage /> },
             {
                 path: "me",
                 element: (
                     <ProtectedRoute>
-                        <UserProfile />
+                        <UserPage />
                     </ProtectedRoute>
                 ),
             },

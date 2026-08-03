@@ -1,8 +1,8 @@
 import React, { useReducer } from "react";
 import { useNavigate } from "react-router";
-import { api, ApiError } from "../api";
-import { useAuth } from "../AuthContext";
-import "../styles/App.css";
+import { api, ApiError } from "../../api/api.ts";
+import { useAuth } from "../../contexts/AuthContext";
+import "../../styles/App.css";
 
 // State type
 type State = {
@@ -171,3 +171,4 @@ export function Login() {
 
       </div> );
 }
+

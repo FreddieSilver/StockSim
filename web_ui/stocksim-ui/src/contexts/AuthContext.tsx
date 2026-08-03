@@ -1,6 +1,6 @@
 import React, {createContext, useContext, useState, useCallback, useEffect, useMemo} from "react";
-import type { UserAuth } from "./types";
-import { api } from "./api";
+import type { UserAuth } from "../types";
+import { api } from "../api/api.ts";
 
 
 interface AuthContextType {
@@ -76,3 +76,4 @@ export function useAuth() {
   }
   return context;
 }
+

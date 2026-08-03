@@ -12,6 +12,8 @@ import dev.freddiesilver.stocksim.tradeorder.TradeOrderService
 import dev.freddiesilver.stocksim.user.AuthService
 import dev.freddiesilver.stocksim.user.UserService
 import dev.freddiesilver.stocksim.user.auth.AuthenticatedUser
+import jakarta.servlet.http.Cookie
+import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -28,8 +30,10 @@ class UserController(
     @PostMapping("/users")
     fun createUser(
         @RequestBody input: UserCreateDto,
+        response: HttpServletResponse
     ): ResponseEntity<*> {
         val result = authService.registerUser(input.username, input.email, input.password)
+        setTokenCookie(response, result.token)
         return dataResponse(
             status = HttpStatus.CREATED,
             data = TokenDto(result.token)
@@ -39,8 +43,10 @@ class UserController(
     @PostMapping("/users/login")
     fun login(
         @RequestBody input: UserLoginDto,
+        response: HttpServletResponse
     ): ResponseEntity<*> {
         val result = authService.login(input.email, input.password)
+        setTokenCookie(response, result.token)
         return dataResponse(
             status = HttpStatus.OK,
             token = result.token,
@@ -48,9 +54,29 @@ class UserController(
         )
     }
 
+    private fun setTokenCookie(response: HttpServletResponse, token: String) {
+        val cookie = Cookie("token", token).apply {
+            isHttpOnly = true
+            path = "/"
+            maxAge = 24 * 60 * 60 // 24 hours
+            // secure = true // uncomment when https
+        }
+        response.addCookie(cookie)
+    }
+
+    private fun clearTokenCookie(response: HttpServletResponse) {
+        val cookie = Cookie("token", "").apply {
+            isHttpOnly = true
+            path = "/"
+            maxAge = 0 // instantly deletes the cookie
+        }
+        response.addCookie(cookie)
+    }
+
     @PostMapping("/users/logout")
-    fun logout(user: AuthenticatedUser): ResponseEntity<*> {
+    fun logout(user: AuthenticatedUser, response: HttpServletResponse): ResponseEntity<*> {
         authService.revokeToken(user.token)
+        clearTokenCookie(response)
         return dataResponse<Unit>(
             status = HttpStatus.NO_CONTENT,
         )

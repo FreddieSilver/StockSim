@@ -1,9 +1,11 @@
-import { useAuth } from "../AuthContext";
-import "../styles/App.css";
+import { useAuth } from "../../contexts/AuthContext";
+import "../../styles/App.css";
 import { useEffect, useReducer, useState, useMemo } from "react";
-import { api } from "../api";
-import { useNotification } from "../NotificationContext";
-import type { Holding, Order, User } from "../types";
+import { api } from "../../api/api.ts";
+import { useNotification } from "../../contexts/NotificationContext";
+import type { Holding, Order, User } from "../../types";
+import { HoldingsTable, type HoldingsSortKey, type SortDirection } from "./HoldingsTable";
+import { OrdersTable, type OrdersSortKey } from "./OrdersTable";
 
 // --- STATE & REDUCER ---
 type State = {
@@ -46,12 +48,7 @@ const initialState: State = {
   user: null, holdings: [], orders: [], isDepositing: false, loading: true, error: null,
 };
 
-// --- SORTING TYPES ---
-type SortDirection = 'asc' | 'desc';
-type HoldingsSortKey = 'asset' | 'shares' | 'price' | 'value' | 'return';
-type OrdersSortKey = 'time' | 'type' | 'asset' | 'shares' | 'price' | 'status';
-
-export function UserProfile() {
+export function UserPage() {
   const { user, refreshUser } = useAuth();
   const { notify } = useNotification();
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -205,70 +202,21 @@ export function UserProfile() {
           </div>
         </div>
 
-        {/* MIDDLE SECTION: HOLDINGS */}
         <h2 style={{ fontSize: '20px', marginBottom: '15px' }}>My Assets</h2>
-        <div className="stock-grid" style={{ marginBottom: '40px' }}>
+        <HoldingsTable
+            holdings={sortedHoldings}
+            sort={holdingsSort}
+            onSort={toggleHoldingsSort}
+            getAvgBuyPrice={getAvgBuyPrice}
+        />
 
-          <div className="stock-row stock-header" style={{ gridTemplateColumns: '1.5fr 1fr 1fr 1fr 1fr', cursor: 'pointer' }}>
-            <span onClick={() => toggleHoldingsSort('asset')}>Asset {holdingsSort.key === 'asset' ? (holdingsSort.direction === 'asc' ? '▲' : '▼') : ''}</span>
-            <span onClick={() => toggleHoldingsSort('shares')}>Shares {holdingsSort.key === 'shares' ? (holdingsSort.direction === 'asc' ? '▲' : '▼') : ''}</span>
-            <span onClick={() => toggleHoldingsSort('price')}>Current Price {holdingsSort.key === 'price' ? (holdingsSort.direction === 'asc' ? '▲' : '▼') : ''}</span>
-            <span onClick={() => toggleHoldingsSort('value')}>Total Value {holdingsSort.key === 'value' ? (holdingsSort.direction === 'asc' ? '▲' : '▼') : ''}</span>
-            <span onClick={() => toggleHoldingsSort('return')}>Total Return {holdingsSort.key === 'return' ? (holdingsSort.direction === 'asc' ? '▲' : '▼') : ''}</span>
-          </div>
-
-          {sortedHoldings.length === 0 ? (
-              <div className="loading-text" style={{ padding: '30px' }}>You don't own any stocks yet.</div>
-          ) : (
-              sortedHoldings.map(h => {
-                const avgPrice = getAvgBuyPrice(h.stock.id);
-                const totalReturn = (h.stock.price - avgPrice) * h.quantity;
-                const returnPercent = avgPrice > 0 ? ((h.stock.price - avgPrice) / avgPrice) * 100 : 0;
-                const isPositive = totalReturn >= 0;
-
-                return (
-                    <div className="stock-row" key={h.stock.id} style={{ gridTemplateColumns: '1.5fr 1fr 1fr 1fr 1fr' }}>
-                      <div style={{ fontWeight: 'bold' }}>{h.stock.company.ticker}</div>
-                      <div>{h.quantity}</div>
-                      <div>${h.stock.price.toFixed(2)}</div>
-                      <div style={{ fontWeight: 'bold' }}>${(h.quantity * h.stock.price).toFixed(2)}</div>
-                      <div className={isPositive ? 'price-up' : 'price-down'}>
-                        {isPositive ? '+' : ''}${totalReturn.toFixed(2)} ({isPositive ? '+' : ''}{returnPercent.toFixed(2)}%)
-                      </div>
-                    </div>
-                );
-              })
-          )}
-        </div>
-
-        {/* BOTTOM SECTION: TRADE HISTORY */}
         <h2 style={{ fontSize: '20px', marginBottom: '15px' }}>Order History</h2>
-        <div className="stock-grid">
-
-          <div className="stock-row stock-header" style={{ gridTemplateColumns: '1fr 1fr 1fr 1.5fr 1fr', cursor: 'pointer' }}>
-            <span onClick={() => toggleOrdersSort('time')}>Order Time {ordersSort.key === 'time' ? (ordersSort.direction === 'asc' ? '▲' : '▼') : ''}</span>
-            <span onClick={() => toggleOrdersSort('type')}>Type {ordersSort.key === 'type' ? (ordersSort.direction === 'asc' ? '▲' : '▼') : ''}</span>
-            <span onClick={() => toggleOrdersSort('asset')}>Asset {ordersSort.key === 'asset' ? (ordersSort.direction === 'asc' ? '▲' : '▼') : ''}</span>
-            <span onClick={() => toggleOrdersSort('shares')}>Shares {ordersSort.key === 'shares' ? (ordersSort.direction === 'asc' ? '▲' : '▼') : ''}</span>
-            <span onClick={() => toggleOrdersSort('price')}>Price (At Order) {ordersSort.key === 'price' ? (ordersSort.direction === 'asc' ? '▲' : '▼') : ''}</span>
-          </div>
-
-          {sortedOrders.length === 0 ? (
-              <div className="loading-text" style={{ padding: '30px' }}>No trade history.</div>
-          ) : (
-              sortedOrders.map(o => (
-                  <div className="stock-row" key={o.id} style={{ gridTemplateColumns: '1fr 1fr 1fr 1.5fr 1fr' }}>
-                    <div style={{ color: 'var(--text-muted)' }}>
-                      {o.timestamp || "N/A"}
-                    </div>
-                    <div className={o.type === 'BUY' ? 'price-up' : 'price-down'}>{o.type}</div>
-                    <div style={{ fontWeight: 'bold' }}>{o.stock.company.ticker}</div>
-                    <div>{o.quantity}</div>
-                    <div>${o.priceValueAtOrder.toFixed(2)}</div>
-                  </div>
-              ))
-          )}
-        </div>
+        <OrdersTable
+            orders={sortedOrders}
+            sort={ordersSort}
+            onSort={toggleOrdersSort}
+        />
       </div>
   );
 }
+
